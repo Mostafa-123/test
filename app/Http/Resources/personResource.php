@@ -15,19 +15,20 @@ class personResource extends JsonResource
     public function toArray($request)
     {
         $photo=$this->photo;
+        $role='user';
         if($photo){
             $photo="http://127.0.0.1:8000/user/auth/userphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'role'=>$role,
             'email'=>$this->email,
             'password'=>$this->password,
             'country'=>$this->country,
             'religion'=>$this->religion,
             'gender'=>$this->gender,
             'phone'=>$this->phone,
-            'national_id'=>$this->national_id,
             'photo'=>$photo,
             'token'=>$this->api_token,
         ];

@@ -7,7 +7,11 @@ use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
+use  App\Http\Resources\ownerResource;
+use App\Http\Resources\plannersResource;
 
 trait responseTrait
 {
@@ -46,15 +50,18 @@ trait responseTrait
         return null;//apiResponse(401,'',"File doesn't exists");
     }
     public function planResources(Plan $plan){
+        $photo[]=null;
         $photos=$plan->planPhotos;
+        $planner=new plannersResource($plan->planner);
             if($photos){
                 $i=0;
                 for($i=0;$i<count($photos);$i++){
-                    $photo[$i]="http://127.0.0.1:8000/planner/planphoto/".$plan->id."/".$photos[$i]->id;
+                    $photo[$i]="http://127.0.0.1:8000/planner/plan/planphoto/".$plan->id."/".$photos[$i]->id;
                 }
             }
         return [
             'id'=>$plan->id,
+            'planner_id'=>$planner,
             'name'=>$plan->name,
             'price'=>$plan->price,
             'description'=>$plan->description,
@@ -71,14 +78,14 @@ trait responseTrait
             if($photos){
                 $i=0;
                 for($i=0;$i<count($photos);$i++){
-                    $photo[$i]="http://127.0.0.1:8000/owner/hallphoto/".$hall->id."/".$photos[$i]->id;
+                    $photo[$i]="http://127.0.0.1:8000/owner/hall/hallphoto/".$hall->id."/".$photos[$i]->id;
                 }
             }
             $videos=$hall->videos;
             if($videos){
                 $i=0;
                 for($i=0;$i<count($videos);$i++){
-                    $video[$i]="http://127.0.0.1:8000/owner/hallvideo/".$hall->id."/".$videos[$i]->id;
+                    $video[$i]="http://127.0.0.1:8000/owner/hall/hallvideo/".$hall->id."/".$videos[$i]->id;
                 }
             }
             $shows=$hall->shows;
@@ -112,7 +119,7 @@ trait responseTrait
             'available'=>$hall->available,
             'start_party'=>$hall->start_party,
             'end_party'=>$hall->end_party,
-            'owner_id'=>$hall->owner_id,
+            'owner_id' =>$hall->owner(),
             'verified'=>$hall->verified,
             'photos'=>$photo,
             'videos'=>$video,
@@ -121,8 +128,6 @@ trait responseTrait
             'comments_count'=> $hall->comments()->count(),
             'comments'=> $hall->comments,
             'likes_count'=> $hall->likes()->count(),
-/*             'likes'=> $hall->likes,
- */
         ];
     }
 }

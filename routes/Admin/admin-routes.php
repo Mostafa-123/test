@@ -31,21 +31,25 @@ use Illuminate\Support\Facades\Auth;
 Route::group([
     'middleware' => ['api'],
     'prefix' => 'auth',
-    'namespace'=>'Api',
+    'namespace' => 'Api',
 
 ], function ($router) {
 
-    Route::group(['namespace'=>'Admin','middleware'=>['auth.guard:admin-api']],function (){
-      /*   Route::post('adminLogin', [AuthController::class, 'adminLogin'])->name('login-admin');
+    Route::group(['namespace' => 'Admin', 'middleware' => ['auth.guard:admin-api']], function () {
+        /*   Route::post('adminLogin', [AuthController::class, 'adminLogin'])->name('login-admin');
         Route::post('adminLogout',[ AuthController::class,'adminLogout'])-> middleware(['auth.guard:admin-api']);
         Route::post('registerAdmin', [AuthController::class, 'registerAdmin']); */
         Route::get('adminProfile', [AuthController::class, 'adminProfile']);
         Route::post('updateAdmin/{admin_id}', [AuthController::class, 'updateAdmin']);
-        Route::get('adminphoto/{admin_id}', [AuthController::class, 'getAdminPhoto']);
+        // Route::get('adminphoto/{admin_id}',
+        //     [AuthController::class, 'getAdminPhoto']
+        // );
 
 
         //Offers
-        Route::post('/createOffer', [OfferController::class, 'store']);
+        Route::post('/createOffer',
+            [OfferController::class, 'store']
+        );
         Route::post('/updateOffer/{id}', [OfferController::class, 'update']);
         Route::delete('/destroyOffer/{id}', [OfferController::class, 'destroy']);
         Route::get('/Offers', [OfferController::class, 'viewAll']);
@@ -56,16 +60,23 @@ Route::group([
         Route::apiResource('Hall', 'HallApiController');
 
         // Bookings
-/*         Route::apiResource('bookings', 'BookingsApiController');
- */        Route::post('/bookings', [BookingController::class, 'bookRoom']);
-           Route::post('/avl', [BookingController::class, 'getAvailableHalls']);
-           Route::get('/viewBookings', [BookingController::class, 'viewBookings']);
+        Route::post('/bookings',
+            [BookingController::class, 'bookRoom']
+        );
+        Route::post('/avl',
+            [BookingController::class, 'getAvailableHalls']
+        );
+        Route::get('/viewBookings', [BookingController::class, 'viewBookings']);
 
-           Route::post('/bookings/{bookingId}/confirm', [BookingController::class, 'confirmBooking']);
-           Route::post('/bookings/{bookingId}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
-           Route::delete('/bookings/rejected', [BookingController::class, 'destroyRejectedBookings']);
-            });
+        Route::post('/bookings/{bookingId}/confirm', [BookingController::class, 'confirmBooking']);
+        Route::post('/bookings/{bookingId}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
+        Route::delete('/bookings/rejected', [BookingController::class, 'destroyRejectedBookings']);
+    });
 });
+
+
+
+
 
 Route::group([
     'middleware' => ['api','auth.guard:admin-api'],
@@ -96,6 +107,8 @@ Route::group([
         Route::delete('deletePlan/{plan_id}', [AdminController::class, 'deletePlan']);
         Route::get('getplan/{plan_id}', [AdminController::class, 'getplan']);
         Route::get('gethall/{hall_id}', [AdminController::class, 'gethall']);
+        Route::post('confirmHallRequest/{hall_id}', [AdminController::class, 'confirmHallRequest']);
+        Route::post('rejectHallRequest/{hall_id}', [AdminController::class, 'rejectHallRequest']);
         Route::get('getConfirmedHalls', [AdminController::class, 'getConfirmedHalls']);
         Route::get('getUnConfirmedHalls', [AdminController::class, 'getUnConfirmedHalls']);
         Route::get('getCanceledHalls', [AdminController::class, 'getCanceledHalls']);
@@ -109,6 +122,34 @@ Route::group([
 
         // Hall
 
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::any('{url}',function (){
+    return response()->json('this url not found', 401);
+})->where('url','.*')->middleware('api');
+Route::group([
+    'middleware' => ['api'],
+    'prefix' => 'auth',
+    'namespace' => 'Api',
+
+], function ($router) {
+    Route::group(['namespace' => 'Admin'], function () {
+        Route::get('adminphoto/{admin_id}', [AuthController::class, 'getAdminPhoto']);
+    });
 });
 
 

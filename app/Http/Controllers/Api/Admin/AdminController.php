@@ -26,7 +26,7 @@ class AdminController extends Controller
     {
         $hallreq = Hall::findOrFail($hall_id);
 
-        $hallreq->status = 'confirmed';
+        $hallreq->verified = 'confirmed';
         $hallreq->save();
 
         return response()->json([
@@ -36,18 +36,25 @@ class AdminController extends Controller
 
 
 
+       // ????????????????????????????????????????
     public function rejectHallRequest($hall_id)
     {
-        $$hallreq = hallResource::findOrFail($hall_id);
+        $hall = Hall::findOrFail($hall_id);
 
-        $booking->status = 'cancelled';
-        $booking->save();
+        $hall->verified = 'cancelled';
+        $hall->save();
 
         return response()->json([
             'message' => 'Booking cancelled successfully',
-            'data' => $$hallreq
+            'data' => $this->hallResources($hall)
         ], 200);
     }
+
+
+
+
+
+
     public function addUser(Request $request){
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|between:2,100',
@@ -57,7 +64,6 @@ class AdminController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:5|max:20',
-            'national_id' => 'required|string|max:100',
 
         ]);
         if($validator->fails()){
@@ -87,7 +93,6 @@ class AdminController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:5|max:25',
-            'national_id' => 'required|string|max:100',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
@@ -116,7 +121,6 @@ class AdminController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:5|max:25',
-            'national_id' => 'required|string|max:100',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
@@ -147,7 +151,7 @@ class AdminController extends Controller
         $admin = Admin::create(array_merge(
             $validator->validated(),
             ['password' => bcrypt($request->password),
-            'photo' => $request->photo?$this->uploadFile($request,'adminImages','photo'):null,
+            'photo' => $request->photo?$this->uploadFile($request,'adminsImages','photo'):null,
             ]
         ));
         return response()->json([
@@ -156,15 +160,9 @@ class AdminController extends Controller
         ], 201);
     }
 
-    public function getAllUsers(){
-        $users=User::get();
-        if($users){
-                foreach($users as $user){
-                    $data[]=new personResource($user);
-            }
-            return $this->response($data,"users returned successfuly",200);
-        }return $this->response('',"somthing wrong",401);
-    }
+
+
+
 
     public function getUserCount(){
         $users=count(User::get());
@@ -180,6 +178,10 @@ class AdminController extends Controller
         $planners=count(Planner::get());
         return $planners;
     }
+    public function getAdminsCount(){
+        $admins=count(Admin::get());
+        return $admins;
+    }
     public function getAllMembersCount(){
         $planners=count(Planner::get());
         $users=count(User::get());
@@ -189,9 +191,19 @@ class AdminController extends Controller
         return $totalCount;
     }
 
-    public function getAdminsCount(){
-        $admins=count(Admin::get());
-        return $admins;
+
+
+
+
+
+    public function getAllUsers(){
+        $users=User::get();
+        if($users){
+                foreach($users as $user){
+                    $data[]=new personResource($user);
+            }
+            return $this->response($data,"users returned successfuly",200);
+        }return $this->response('',"somthing wrong",401);
     }
     public function getAllPlanners(){
         $planners=Planner::get();
@@ -220,6 +232,11 @@ class AdminController extends Controller
             return $this->response($data,"admins returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
+
+
+
+
+
 
     public function deleteUser($user_id){
         $user=User::find($user_id);
@@ -282,6 +299,10 @@ class AdminController extends Controller
             }
     }
 
+
+
+
+
     public function destroyHall($id){
 
         $result=Hall::find($id);
@@ -324,6 +345,9 @@ class AdminController extends Controller
         return $this->response('', 'this plan_id not found',401);
     }
 
+
+
+
     public function getplan($plan_id) {
         $plan=Plan::find($plan_id);
         if($plan){
@@ -339,6 +363,8 @@ class AdminController extends Controller
         }
         return $this->response('',"this hall_id not found",401);
     }
+
+
     public function getConfirmedHalls(){
         $halls=Hall::where('verified', 'confirmed')->get();
         if($halls){
@@ -367,8 +393,9 @@ class AdminController extends Controller
             return $this->response($data,"halls returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
+
     public function getAllHalls(){
-        $halls=Hall::with(['comments','likes'])->get();
+        $halls=Hall::withcount(['comments','likes'])->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);

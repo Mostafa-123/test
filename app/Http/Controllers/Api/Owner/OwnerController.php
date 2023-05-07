@@ -16,10 +16,14 @@ use App\Models\Owner;
 use App\Models\Photo;
 use App\Models\Service;
 use App\Models\Show;
+use Illuminate\Support\Facades\DB;
 use App\Models\Video;
+use Exception;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+
 use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 
 
@@ -38,9 +42,9 @@ class OwnerController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'address' => 'required|max:255',
-            'country'=>'required|max:255',
-            'city'=>'required|max:255',
-            'street'=>'required|max:255',
+            'country' => 'required|max:255',
+            'city' => 'required|max:255',
+            'street' => 'required|max:255',
             'rooms' => 'required',
             'chairs' => 'required',
             'price' => 'required',
@@ -55,64 +59,238 @@ class OwnerController extends Controller
         if ($validator->fails()) {
             return $this->response(null, $validator->errors(), 400);
         }
-        $result = Hall::create([
-            'name' => $request->name,
-            'address' => $request->address, 'country' => $request->country,
-            'city' => $request->city,
-            'street' => $request->street,
-            'rooms' => $request->rooms,
+                 //$the_owner_id = Auth::guard('owner-api')->user()->id;
+        try {
+            $the_owner_id = Auth::guard('owner-api')->user()->id;
+        } catch (\Exception  $e) {
+            return response()->json(['message' => 'Invalid token'], 401);
+        }
+        try {
+            DB::beginTransaction();
+            $result = Hall::create([
+                'name' => $request->name,
+                'address' => $request->address, 'country' => $request->country,
+                'city' => $request->city,
+                'street' => $request->street,
+                'rooms' => $request->rooms,
+                'chairs' => $request->chairs, 'price' => $request->price,
+                'hours' => $request->hours, 'tables' => $request->tables,
+                'type' => $request->type, 'capacity' => $request->capacity,
+                'available' => $request->available,
+                'verified' => "unconfirmed",
 
-            'chairs' => $request->chairs, 'price' => $request->price,
-            'hours' => $request->hours, 'tables' => $request->tables,
-            'type' => $request->type, 'capacity' => $request->capacity,
-            'available' => $request->available,
-            'owner_id'=> auth()->user()->id,
-            'start_party' => $request->start_party,
-            'end_party' => $request->end_party
-        ]);
-        if ($request->photos[0]) {
-            for ($i = 0; $i < count($request->photos); $i++) {
-                $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
-                Photo::create([
-                    'photoname' => $path,
-                    'hall_id' => $result->id,
-                ]);
-            }
-        }
-        if ($request->videos[0]) {
-            for ($i = 0; $i < count($request->videos); $i++) {
-                $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
-                Video::create([
-                    'videoname' => $path,
-                    'hall_id' => $result->id,
-                ]);
-            }
-        }
-        if ($request->services[0]) {
-            for ($i = 0; $i < count($request->services); $i++) {
-                $services = $request->services;
-                Service::create([
-                    'servicename' => $services[$i],
-                    'hall_id' => $result->id,
-                ]);
-            }
-        }
-        if ($request->shows[0]) {
-            for ($i = 0; $i < count($request->shows); $i++) {
-                $shows = $request->shows;
-                Show::create([
-                    'showname' => $shows[$i],
-                    'hall_id' => $result->id,
-                ]);
-            }
-        }
+                'owner_id' => auth::guard('owner-api')->user()->id,
 
-        if ($result) {
-            return $this->response($this->hallResources($result), 'done', 201);
-        } else {
-            return $this->response(null, 'halls is not saved', 405);
+                'start_party' => $request->start_party,
+                'end_party' => $request->end_party
+            ]);
+            if (($request->photos)) {
+                $request->photos[0];
+                for ($i = 0; $i < count($request->photos); $i++) {
+                    $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
+                    Photo::create([
+                        'photoname' => $path,
+                        'hall_id' => $result->id,
+                    ]);
+                }
+            }
+            if ($request->videos) {
+                $request->videos[0];
+                for ($i = 0; $i < count($request->videos); $i++) {
+                    $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
+                    Video::create([
+                        'videoname' => $path,
+                        'hall_id' => $result->id,
+                    ]);
+                }
+            }
+            if ($request->services) {
+                $request->services[0];
+                for ($i = 0; $i < count($request->services); $i++) {
+                    $services = $request->services;
+                    Service::create([
+                        'servicename' => $services[$i],
+                        'hall_id' => $result->id,
+                    ]);
+                }
+            }
+            if ($request->shows) {
+                $request->shows[0];
+                for ($i = 0; $i < count($request->shows); $i++) {
+                    $shows = $request->shows;
+                    Show::create([
+                        'showname' => $shows[$i],
+                        'hall_id' => $result->id,
+                    ]);
+                }
+            }
+            DB::commit();
+            if ($result) {
+                return $this->response($this->hallResources($result), 'done', 201);
+            } else {
+                return $this->response(null, 'halls is not saved', 405);
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            return $this->response('', $e, 401);
         }
     }
+    //up
+    public function updateHall(Request $request, $hall_id)
+    {
+        $hall = Hall::find($hall_id);
+
+        if ($hall) {
+            try {
+                DB::beginTransaction();
+                $photos = $hall->photos;
+                if (($request->photos)) {
+                    if ($request->photos[0]) {
+                        if ($photos) {
+                            for ($i = 0; $i < count($photos); $i++) {
+                                $path = $photos[$i]->photoname;
+
+                                $photo = Photo::where('photoname', $path)->get();
+                                // print($photo[0]);die;
+                                $photo[0]->delete();
+                                $this->deleteFile($path);
+                            }
+                            for ($i = 0; $i < count($request->photos); $i++) {
+                                $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
+                                Photo::create([
+                                    'photoname' => $path,
+                                    'hall_id' => $hall->id,
+                                ]);
+                            }
+                        } else if ($photos == null) {
+                            for ($i = 0; $i < count($request->photos); $i++) {
+                                $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
+                                Photo::create([
+                                    'photoname' => $path,
+                                    'hall_id' => $hall->id,
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $shows = $hall->shows;
+                if ($request->shows[0]) {
+                    if ($shows) {
+                        for ($i = 0; $i < count($shows); $i++) {
+                            $path = $shows[$i]->showname;
+
+                            $show = Show::where('showname', $path)->get();
+                            // print($photo[0]);die;
+                            $show[0]->delete();
+                        }
+                        for ($i = 0; $i < count($request->shows); $i++) {
+                            $path = $request->shows;
+                            Show::create([
+                                'showname' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    } else if ($shows == null) {
+                        for ($i = 0; $i < count($request->shows); $i++) {
+                            $path = $request->shows;
+                            Show::create([
+                                'showname' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    }
+                }
+                $services = $hall->services;
+                if ($request->services[0]) {
+                    if ($services) {
+                        for ($i = 0; $i < count($services); $i++) {
+                            $path = $services[$i]->servicename;
+
+                            $service = Service::where('servicename', $path)->get();
+                            // print($photo[0]);die;
+                            $service[0]->delete();
+                        }
+                        for ($i = 0; $i < count($request->services); $i++) {
+                            $path = $request->services;
+                            Service::create([
+                                'servicename' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    } else if ($services == null) {
+                        for ($i = 0; $i < count($request->services); $i++) {
+                            $path = $request->services;
+                            Service::create([
+                                'servicename' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    }
+                }
+                $videos = $hall->videos;
+                if (($request->videos)) {
+                    if ($request->videos[0]) {
+                        if ($videos) {
+                            for ($i = 0; $i < count($videos); $i++) {
+                                $path = $videos[$i]->videoname;
+
+                                $video = Video::where('videoname', $path)->get();
+                                // print($photo[0]);die;
+                                $video[0]->delete();
+                                $this->deleteFile($path);
+                            }
+                            for ($i = 0; $i < count($request->videos); $i++) {
+                                $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
+                                Video::create([
+                                    'videoname' => $path,
+                                    'hall_id' => $hall->id,
+                                ]);
+                            }
+                        } else if ($videos == null) {
+                            for ($i = 0; $i < count($request->videos); $i++) {
+                                $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
+                                Video::create([
+                                    'videoname' => $path,
+                                    'hall_id' => $hall->id,
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $newData = [
+                    'name' => $request->name ? $request->name : $hall->name,
+                    'address' => $request->address ? $request->address : $hall->address,
+                    'country' => $request->country ? $request->country : $hall->country,
+                    'city' => $request->city ? $request->city : $hall->city,
+                    'street' => $request->street ? $request->street : $hall->street,
+                    'rooms' => $request->rooms ? $request->rooms : $hall->rooms,
+                    'chairs' => $request->chairs ? $request->chairs : $hall->chairs,
+                    'price' => $request->price ? $request->price : $hall->price,
+                    'hours' => $request->hours ? $request->hours : $hall->hours,
+                    'tables' => $request->tables ? $request->tables : $hall->tables,
+                    'type' => $request->type ? $request->type : $hall->type,
+                    'capacity' => $request->capacity ? $request->capacity : $hall->capacity,
+                    'available' => $request->available ? $request->available : $hall->available,
+                    'start_party' => $request->start_party ? $request->start_party : $hall->start_party,
+                    'end_party' => $request->end_party ? $request->end_party : $hall->end_party,
+
+
+                ];
+
+                $hall->update($newData);
+                DB::commit();
+                return $this->response($this->hallResources($hall), 'hall updated successfully', 200);
+            } catch (Exception $e) {
+                DB::rollback();
+                return $this->response('', $e, 401);
+            }
+        } else {
+            return $this->response('', 'hall not  found', 404);
+        }
+    }
+
+
+
 
     public function getHallPhoto($hall_id, $photo_id)
     {
@@ -139,32 +317,34 @@ class OwnerController extends Controller
         return $this->response('', 'this hall_id not found', 401);
     }
 
-    public function destroyHall($id){
 
-        $result=Hall::find($id);
 
-        if(!$result){
-            return $this->response(null,'The hall request Not Found',404);
-        }else if ($result){
-            $photos=$result->photos;
-            if($photos){
-                for($i=0;$i<count($photos);$i++) {
-                    $path=$photos[$i]->photoname;
+    public function destroyHall($id)
+    {
+
+        $result = Hall::find($id);
+
+        if (!$result) {
+            return $this->response(null, 'The hall request Not Found', 404);
+        } else if ($result) {
+            $photos = $result->photos;
+            if ($photos) {
+                for ($i = 0; $i < count($photos); $i++) {
+                    $path = $photos[$i]->photoname;
                     $this->deleteFile($path);
-                    }
                 }
-                $videos=$result->videos;
-            if($videos){
-                for($i=0;$i<count($videos);$i++) {
-                    $path=$videos[$i]->videoname;
-                    $this->deleteFile($path);
-                    }
-                }
-            $result->delete();
-            return $this->response('','The hall request deleted',200);
             }
+            $videos = $result->videos;
+            if ($videos) {
+                for ($i = 0; $i < count($videos); $i++) {
+                    $path = $videos[$i]->videoname;
+                    $this->deleteFile($path);
+                }
+            }
+            $result->delete();
+            return $this->response('', 'The hall request deleted', 200);
+        }
     }
-
     public function deleteAllOwnerHalls($owner_id){
         $owner=Owner::find($owner_id);
         if($owner){
@@ -179,147 +359,16 @@ class OwnerController extends Controller
         }return $this->response('',"This owner id not found",401);
     }
 
-    public function updateHall(Request $request, $hall_id)
-    {
-        $hall = Hall::find($hall_id);
-
-        if ($hall) {
-            $photos = $hall->photos;
-            if ($request->photos[0]) {
-                if ($photos) {
-                    for ($i = 0; $i < count($photos); $i++) {
-                        $path = $photos[$i]->photoname;
-
-                        $photo = Photo::where('photoname', $path)->get();
-                        // print($photo[0]);die;
-                        $photo[0]->delete();
-                        $this->deleteFile($path);
-                    }
-                    for ($i = 0; $i < count($request->photos); $i++) {
-                        $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
-                        Photo::create([
-                            'photoname' => $path,
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                } else if ($photos == null) {
-                    for ($i = 0; $i < count($request->photos); $i++) {
-                        $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
-                        Photo::create([
-                            'photoname' => $path,
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                }
-            }
-            $shows = $hall->shows;
-            if ($request->shows[0]) {
-                if ($shows) {
-                    for ($i = 0; $i < count($shows); $i++) {
-                        $path = $shows[$i]->showname;
-
-                        $show = Show::where('showname', $path)->get();
-                        // print($photo[0]);die;
-                        $show[0]->delete();
-                    }
-                    for ($i = 0; $i < count($request->shows); $i++) {
-                        $path = $request->shows;
-                        Show::create([
-                            'showname' => $path[$i],
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                } else if ($shows == null) {
-                    for ($i = 0; $i < count($request->shows); $i++) {
-                        $path = $request->shows;
-                        Show::create([
-                            'showname' => $path[$i],
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                }
-            }
-            $services = $hall->services;
-            if ($request->services[0]) {
-                if ($services) {
-                    for ($i = 0; $i < count($services); $i++) {
-                        $path = $services[$i]->servicename;
-
-                        $service = Service::where('servicename', $path)->get();
-                        // print($photo[0]);die;
-                        $service[0]->delete();
-                    }
-                    for ($i = 0; $i < count($request->services); $i++) {
-                        $path = $request->services;
-                        Service::create([
-                            'servicename' => $path[$i],
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                } else if ($services == null) {
-                    for ($i = 0; $i < count($request->services); $i++) {
-                        $path = $request->services;
-                        Service::create([
-                            'servicename' => $path[$i],
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                }
-            }
-            $videos = $hall->videos;
-            if ($request->videos[0]) {
-                if ($videos) {
-                    for ($i = 0; $i < count($videos); $i++) {
-                        $path = $videos[$i]->videoname;
-
-                        $video = Video::where('videoname', $path)->get();
-                        // print($photo[0]);die;
-                        $video[0]->delete();
-                        $this->deleteFile($path);
-                    }
-                    for ($i = 0; $i < count($request->videos); $i++) {
-                        $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
-                        Video::create([
-                            'videoname' => $path,
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                } else if ($videos == null) {
-                    for ($i = 0; $i < count($request->videos); $i++) {
-                        $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
-                        Video::create([
-                            'videoname' => $path,
-                            'hall_id' => $hall->id,
-                        ]);
-                    }
-                }
-            }
-            $newData = [
-                'name' => $request->name?$request->name:$hall->name,
-                'address' => $request->address?$request->address:$hall->address,
-                'country' => $request->country?$request->country:$hall->country,
-                'city' => $request->city?$request->city:$hall->city,
-                'street' => $request->street?$request->street:$hall->street,
-                'rooms' => $request->rooms?$request->rooms:$hall->rooms,
-                'chairs' => $request->chairs?$request->chairs:$hall->chairs,
-                'price' => $request->price?$request->price:$hall->price,
-                'hours' => $request->hours?$request->hours:$hall->hours,
-                'tables' => $request->tables?$request->tables:$hall->tables,
-                'type' => $request->type?$request->type:$hall->type,
-                'capacity' => $request->capacity?$request->capacity:$hall->capacity,
-                'available' => $request->available?$request->available:$hall->available,
-                'start_party' => $request->start_party?$request->start_party:$hall->start_party,
-                'end_party' => $request->end_party?$request->end_party:$hall->end_party,
 
 
-            ];
 
-            $hall->update($newData);
-        } else {
-            return $this->response('', 'hall not  found', 404);
-        }
-        return $this->response($this->hallResources($hall), 'hall updated successfully', 200);
-    }
+
+
+
+
+
+
+
 
     public function addPhotoToMyhall(Request $request, $hall_id)
     {
@@ -327,7 +376,8 @@ class OwnerController extends Controller
         $hall = Hall::find($hall_id);
 
         if ($hall) {
-            if ($request->photos[0]) {
+            if ($request->photos) {
+                $request->photos[0];
                 for ($i = 0; $i < count($request->photos); $i++) {
                     $path = $this->uploadMultiFile($request, $i, 'hallPhotos', 'photos');
                     Photo::create([
@@ -341,14 +391,14 @@ class OwnerController extends Controller
         }
         return $this->response($this->hallResources($hall), 'photos added successfully', 200);
     }
-
     public function addVideoToMyhall(Request $request, $hall_id)
     {
 
         $hall = Hall::find($hall_id);
 
         if ($hall) {
-            if ($request->videos[0]) {
+            if ($request->videos) {
+                $request->videos[0];
                 for ($i = 0; $i < count($request->videos); $i++) {
                     $path = $this->uploadMultiFile($request, $i, 'hallVideos', 'videos');
                     Video::create([
@@ -363,6 +413,11 @@ class OwnerController extends Controller
         return $this->response($this->hallResources($hall), 'photos added successfully', 200);
     }
 
+
+
+
+
+
     public function gethall($hall_id) {
         $hall=Hall::withcount(['likes','comments'])->find($hall_id);
         if($hall){
@@ -370,8 +425,6 @@ class OwnerController extends Controller
         }
         return $this->response('',"this hall_id not found",401);
     }
-
-
     public function getAllOwnerHalls($owner_id){
         $owner=Owner::find($owner_id);
         if($owner){
@@ -394,6 +447,12 @@ class OwnerController extends Controller
             return $this->response($data,"halls returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
+
+
+
+
+
+
 
     public function getAllHallsByPrice($minPrice,$maxPrice){
         $halls=Hall::where('verified', 'confirmed')->where('price','>',$minPrice)->where('price','<',$maxPrice)->get();
@@ -452,37 +511,57 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
 
-    public function DestroyAllHallRequest()
-    {
-        $reqs = Hall::where('status', 'cancelled')->get();
 
-        foreach ($reqs as $req) {
-            $req->delete();
-        }
 
-        return response()->json([
-            'message' => 'Rejected Halls deleted successfully',
-        ], 200);
-    }
 
-    public function destroyHallRequest($id){
 
-        $result=Hall::where('status', 'cancelled')->find($id);
 
-        if(!$result){
-            return $this->response(null,'The hall request Not Found',404);
-        }else if ($result){
-            $photos=$result->photos;
-            if($photos){
-                for($i=0;$i<count($photos);$i++) {
-                    $path=$photos[$i]->photoname;
-                    $this->deleteFile($path);
-                    }
-                }
-            $result->delete();
-            return $this->response('','The hall request deleted',200);
-            }
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // public function DestroyAllHallRequest()
+    // {
+    //     $reqs = Hall::where('status', 'cancelled')->get();
+
+    //     foreach ($reqs as $req) {
+    //         $req->delete();
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'Rejected Halls deleted successfully',
+    //     ], 200);
+    // }
+
+    // public function destroyHallRequest($id){
+
+    //     $result=Hall::where('status', 'cancelled')->find($id);
+
+    //     if(!$result){
+    //         return $this->response(null,'The hall request Not Found',404);
+    //     }else if ($result){
+    //         $photos=$result->photos;
+    //         if($photos){
+    //             for($i=0;$i<count($photos);$i++) {
+    //                 $path=$photos[$i]->photoname;
+    //                 $this->deleteFile($path);
+    //                 }
+    //             }
+    //         $result->delete();
+    //         return $this->response('','The hall request deleted',200);
+    //         }
+    // }
 
     public function confirmBooking($bookingId){
         $booking = Booking::findOrFail($bookingId);

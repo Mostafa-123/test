@@ -59,16 +59,7 @@ Route::group([
 
 
         Route::get('/Offers', [OfferController::class, 'viewAll']);
-
-
-
-
-
             });
-
-
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-
 });
 
 

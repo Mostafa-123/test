@@ -15,12 +15,14 @@ class plannersResource extends JsonResource
     public function toArray($request)
     {
         $photo=$this->photo;
+        $role='planner';
         if($photo){
-            $photo="http://127.0.0.1:8000/planner/plannerphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/planner/auth/plannerphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'role'=>$role,
             'email'=>$this->email,
             'password'=>$this->password,
             'country'=>$this->country,

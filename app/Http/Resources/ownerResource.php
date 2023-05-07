@@ -15,12 +15,14 @@ class ownerResource extends JsonResource
     public function toArray($request)
     {
         $photo=$this->photo;
+        $role='owner';
         if($photo){
-            $photo="http://127.0.0.1:8000/owner/ownerphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/owner/auth/ownerphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
+            'role'=>$role,
             'email'=>$this->email,
             'password'=>$this->password,
             'country'=>$this->country,

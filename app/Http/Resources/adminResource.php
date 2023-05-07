@@ -15,11 +15,13 @@ class adminResource extends JsonResource
     public function toArray($request)
     {
         $photo=$this->photo;
+        $role='admin';
         if($photo){
             $photo="http://127.0.0.1:8000/admin/auth/adminphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
+            'role'=>$role,
             'name'=>$this->name,
             'email'=>$this->email,
             'password'=>$this->password,
