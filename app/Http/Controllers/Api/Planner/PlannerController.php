@@ -121,8 +121,8 @@ class PlannerController extends Controller
                     if ($photos) {
                         for ($i = 0; $i < count($photos); $i++) {
                             $path = $photos[$i]->photoname;
-                            $photo = PlanPhoto::where('photoname', $path)->get();
-                            $photo[0]->delete();
+                            $photo = PlanPhoto::find($photos[$i]->id);
+                            $photo->delete();
                             $this->deleteFile($path);
                         }
                         for ($i = 0; $i < count($request->photos); $i++) {
@@ -149,10 +149,12 @@ class PlannerController extends Controller
                 ];
                 $plan->update($newData);
                 DB::commit();
-                return $this->response($this->planResources($plan), 'plan updated successfully', 200);
+                $plann = plan::find($plan_id);
+                return $this->response($this->planResources($plann), 'plan updated successfully', 200);
+
             } catch (Exception $e) {
                 DB::rollback();
-                return $this->response('', $e, 401);
+                return $this->response('0', $e, 401);
             }
         } else {
             return $this->response('', 'plan not  found', 404);
@@ -202,7 +204,7 @@ class PlannerController extends Controller
         }return $this->response('',"This planner id not found",401);
     }
     public function getAllPlans(){
-        $plans=Plan::where('verified', 'confirmed')->get();
+        $plans=Plan::get();
         if($plans){
                 foreach($plans as $plan){
                     $data[]=$this->planResources($plan);

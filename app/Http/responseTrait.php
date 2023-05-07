@@ -61,7 +61,7 @@ trait responseTrait
             }
         return [
             'id'=>$plan->id,
-            'planner_id'=>$planner,
+            'planner'=>$planner,
             'name'=>$plan->name,
             'price'=>$plan->price,
             'description'=>$plan->description,

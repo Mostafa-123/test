@@ -411,7 +411,7 @@ class AuthController extends Controller
             }
             $newData = [
                 'name' => $request->name ? $request->name : $admin->name,
-                'password' => $request->password ? $request->password : $admin->password,
+                'password' => $request->password ? bcrypt($request->password) : $admin->password,
                 'photo' => $photo,
             ];
             $admin->update($newData);
@@ -433,7 +433,7 @@ class AuthController extends Controller
             }
             $newData = [
                 'name' => $request->name ? $request->name : $owner->name,
-                'password' => $request->password ? $request->password : $owner->password,
+                'password' => $request->password ? bcrypt($request->password) : $owner->password,
                 'country' => $request->country ? $request->country : $owner->country,
                 'religion' => $request->religion ? $request->religion : $owner->religion,
                 'gender' => $request->gender ? $request->gender : $owner->gender,
@@ -459,7 +459,7 @@ class AuthController extends Controller
             }
             $newData = [
                 'name' => $request->name ? $request->name : $planner->name,
-                'password' => $request->password ? $request->password : $planner->password,
+                'password' => $request->password ? bcrypt($request->password): $planner->password,
                 'country' => $request->country ? $request->country : $planner->country,
                 'religion' => $request->religion ? $request->religion : $planner->religion,
                 'gender' => $request->gender ? $request->gender : $planner->gender,
@@ -485,7 +485,7 @@ class AuthController extends Controller
             }
             $newData = [
                 'name' => $request->name ? $request->name : $user->name,
-                'password' => $request->password ? $request->password : $user->password,
+                'password' => $request->password ? bcrypt($request->password) : $user->password,
                 'country' => $request->country ? $request->country : $user->country,
                 'religion' => $request->religion ? $request->religion : $user->religion,
                 'gender' => $request->gender ? $request->gender : $user->gender,
