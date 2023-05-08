@@ -61,7 +61,6 @@ class InteractionsController extends Controller
     public function getComment(Request $request,  $hall_id)
     {
         $thehall = Hall::where('id',$hall_id)->first();
-        $limit = 2;
         if($thehall){ response()->json(['message' => 'HALL ID.']);
             $thecomment = Comment::where('hall_id',$hall_id)->first();
             if($thecomment){

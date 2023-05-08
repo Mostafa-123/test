@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'checkAdminToken'=> \App\Http\Middleware\CheckAdminToken::class,
 
         'auth.guard'  => \App\Http\Middleware\AssignGuard::class,
+        'VerifyToken'  => \App\Http\Middleware\VerifyToken::class,
     ];
 }

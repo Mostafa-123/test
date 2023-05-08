@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InteractionsController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Api\User\UserAuthController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\AuthwController;
@@ -26,6 +27,8 @@ Route::group([
         // Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
 
 
+        Route::post('bookRoom', [ BookingController::class,'bookRoom']);
+        Route::post('bookPlan', [ BookingController::class,'bookPlan']);
 
         Route::post('halls/{hall_id}/addLike', [InteractionsController::class, 'addLike']);
         Route::post('halls/{hall_id}/addComment', [InteractionsController::class, 'addComment']);

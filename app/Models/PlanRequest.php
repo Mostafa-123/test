@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Owner;
+use App\Models\Plan;
+use App\Models\Planner;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class PlanRequest extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $table = 'plan_requests'  ;
 
     protected $fillable = [
         'planner_id',
@@ -89,12 +93,12 @@ function user() {
 }
 function plannner() {
 
-    return $this->belongsTo(Planner::class, );
+    return $this->belongsTo(Planner::class,'planner_id' );
 
 }
 function plan() {
 
-    return $this->belongsTo(Plan::class,);
+    return $this->belongsTo(Plan::class, 'plan_id');
 
 }
 

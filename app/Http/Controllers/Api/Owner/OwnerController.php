@@ -316,6 +316,21 @@ class OwnerController extends Controller
         }
         return $this->response('', 'this hall_id not found', 401);
     }
+    public function getHallComments($hall_id)
+    {
+        $hall = Hall::find($hall_id);
+        if ($hall) {
+            $hallComments = Comment::where('hall_id', $hall_id)->get();
+
+            if (!$hallComments) {
+                return $this->response('', "This hall doesn't has comments", 401);
+                        }
+
+                        return $this->response('', 'this hall_id not found', 401);
+        }
+          return response()->json($hallComments);
+
+    }
 
 
 

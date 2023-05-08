@@ -27,7 +27,7 @@ use App\Http\Resources\hallResource;
 //    return $request->user();
 //});
 Route::group([
-    'middleware' => ['api','auth.guard:owner-api'],
+    'middleware' => ['api','auth.guard:owner-api','VerifyToken:owner-api'],
     'prefix' => 'auth',
     'namespace'=>'Api',
 
@@ -63,8 +63,8 @@ Route::group([
            Route::post('/avl', [BookingController::class, 'getAvailableHalls']);
            Route::get('/viewBookings', [BookingController::class, 'viewBookings']);
 
-           Route::post('/bookings/{bookingId}/confirm', [BookingController::class, 'confirmBooking']);
-           Route::post('/bookings/{bookingId}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
+           Route::post('/confirmBooking/{bookingId}', [BookingController::class, 'confirmBooking']);
+           Route::post('/rejectBooking/{bookingId}', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
            Route::delete('/bookings/rejected', [BookingController::class, 'destroyRejectedBookings']);
         });
 

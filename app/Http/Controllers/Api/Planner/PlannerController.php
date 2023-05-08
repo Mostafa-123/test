@@ -250,7 +250,27 @@ class PlannerController extends Controller
 
     public function confirmBookingPlan($bookingplanId)
     {
-        $bookingplan = PlanRequest::findOrFail($bookingplanId);
+         $bookingplan = PlanRequest::findOrFail($bookingplanId);
+
+       $planner  = $bookingplan->planner_id;
+
+       try {
+        $planner = Auth::guard('planner-api')->user();
+        if (!$planner) {
+            throw new JWTException('Invalid token');
+        }
+        $planner_id = $planner->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+    $actor_id = Auth::guard('planner-api')->user()->id;
+
+    if($planner_id==$actor_id){
+
 
         $bookingplan->status = 'confirmed';
         $bookingplan->save();
@@ -258,11 +278,37 @@ class PlannerController extends Controller
         return response()->json([
             'message' => 'Booking confirmed successfully',
             'data' => $bookingplan
-        ], 200);    }
+        ], 200);
 
-    public function rejectBooking($bookingplanId)
+    }        return response()->json([
+        'message' => 'Unauthorized',
+    ], 200);
+
+    }
+
+    public function rejectBookingPlan($bookingplanId)
     {
-        $bookingplan = PlanRequest::findOrFail($bookingplanId);
+         $bookingplan = PlanRequest::findOrFail($bookingplanId);
+
+       $planner  = $bookingplan->planner_id;
+
+       try {
+        $planner = Auth::guard('planner-api')->user();
+        if (!$planner) {
+            throw new JWTException('Invalid token');
+        }
+        $planner_id = $planner->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+    $actor_id = Auth::guard('planner-api')->user()->id;
+
+    if($planner_id==$actor_id){
+
 
         $bookingplan->status = 'cancelled';
         $bookingplan->save();
@@ -270,7 +316,15 @@ class PlannerController extends Controller
         return response()->json([
             'message' => 'Booking cancelled successfully',
             'data' => $bookingplan
-        ], 200);    }
+        ], 200);
+
+    }        return response()->json([
+        'message' => 'Unauthorized',
+    ], 200);
+
+    }
+
+
 
 
 

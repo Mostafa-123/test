@@ -1,11 +1,13 @@
 <?php
 
-/* use App\Http\Controllers\AuthController; */
-/* use App\Http\Controllers\Api\Admin\AuthController;
- */use App\http\Controllers\AuthController;
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InteractionsController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\hallsController;
 use App\Http\Controllers\Api\Owner\OwnerController;
+use App\Http\Controllers\Api\Planner\PlannerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +47,15 @@ Route::group([
 
 
     Route::group([],function (){
-        Route::get('halls/{hall_id}/getComment', [ InteractionsController::class,'getComment']);
+        Route::get('getHallComment/{hall_id}', [ InteractionsController::class,'getComment']);
+
+
+
+        Route::post('bookRoom', [ BookingController::class,'bookRoom']);
+
+
+
+        Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
         Route::get('/getHall/{hall_id}', [UserController::class, 'gethall']);

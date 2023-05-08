@@ -36,7 +36,7 @@ Route::group([
         Route::get('viewCancelledBookingsPlans', [PlannerController::class, 'viewCancelledBookingsPlans']);
         Route::get('viewBookingsplans', [PlannerController::class, 'viewBookingsplans']);
         Route::post('confirmBookingPlan/{bookingplanId}', [PlannerController::class, 'confirmBookingPlan']);
-        Route::post('rejectBooking/{bookingplanId}', [PlannerController::class, 'rejectBooking']);
+        Route::post('rejectBookingPlan/{bookingplanId}', [PlannerController::class, 'rejectBookingPlan']);
 
     });
 });
