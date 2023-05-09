@@ -39,8 +39,8 @@ Route::group([
         /*   Route::post('adminLogin', [AuthController::class, 'adminLogin'])->name('login-admin');
         Route::post('adminLogout',[ AuthController::class,'adminLogout'])-> middleware(['auth.guard:admin-api']);
         Route::post('registerAdmin', [AuthController::class, 'registerAdmin']); */
-        Route::get('adminProfile', [AuthController::class, 'adminProfile']);
-        Route::post('updateAdmin/{admin_id}', [AuthController::class, 'updateAdmin']);
+        Route::get('adminProfile', [AuthController::class, 'adminProfile']);//1
+        Route::post('updateAdmin/{admin_id}', [AuthController::class, 'updateAdmin']);//1
         // Route::get('adminphoto/{admin_id}',
         //     [AuthController::class, 'getAdminPhoto']
         // );
@@ -86,33 +86,33 @@ Route::group([
 ], function ($router) {
 
     Route::group(['namespace'=>'Admin'],function (){
-        Route::post('addUser', [AdminController::class, 'addUser']);
-        Route::post('addPlanner', [AdminController::class, 'addPlanner']);
-        Route::post('addOwner', [AdminController::class, 'addOwner']);
-        Route::post('addAdmin', [AdminController::class, 'addAdmin']);
-        Route::get('getAllUsers', [AdminController::class, 'getAllUsers']);
-        Route::get('getAllPlanners', [AdminController::class, 'getAllPlanners']);
-        Route::get('getAllOwners', [AdminController::class, 'getAllOwners']);
-        Route::get('getAllAdmins', [AdminController::class, 'getAllAdmins']);
-        Route::get('getUserCount', [AdminController::class, 'getUserCount']);
-        Route::get('getOwnersCount', [AdminController::class, 'getOwnersCount']);
-        Route::get('getPlannersCount', [AdminController::class, 'getPlannersCount']);
-        Route::get('getAdminsCount', [AdminController::class, 'getAdminsCount']);
-        Route::get('getAllMembersCount', [AdminController::class, 'getAllMembersCount']);
-        Route::delete('deleteUser/{user_id}', [AdminController::class, 'deleteUser']);
-        Route::delete('deleteAdmin/{admin_id}', [AdminController::class, 'deleteAdmin']);
-        Route::delete('deletePlanner/{planner_id}', [AdminController::class, 'deletePlanner']);
-        Route::delete('deleteOwner/{owner_id}', [AdminController::class, 'deleteOwner']);
-        Route::delete('deleteHall/{hall_id}', [AdminController::class, 'destroyHall']);
-        Route::delete('deletePlan/{plan_id}', [AdminController::class, 'deletePlan']);
-        Route::get('getplan/{plan_id}', [AdminController::class, 'getplan']);
-        Route::get('gethall/{hall_id}', [AdminController::class, 'gethall']);
+        Route::post('addUser', [AdminController::class, 'addUser']);//1
+        Route::post('addPlanner', [AdminController::class, 'addPlanner']);//1
+        Route::post('addOwner', [AdminController::class, 'addOwner']);//1
+        Route::post('addAdmin', [AdminController::class, 'addAdmin']);//1
+        Route::get('getAllUsers', [AdminController::class, 'getAllUsers']);//1
+        Route::get('getAllPlanners', [AdminController::class, 'getAllPlanners']);//1
+        Route::get('getAllOwners', [AdminController::class, 'getAllOwners']);//1
+        Route::get('getAllAdmins', [AdminController::class, 'getAllAdmins']);//1
+        Route::get('getUserCount', [AdminController::class, 'getUserCount']);//1
+        Route::get('getOwnersCount', [AdminController::class, 'getOwnersCount']);//1
+        Route::get('getPlannersCount', [AdminController::class, 'getPlannersCount']);//1
+        Route::get('getAdminsCount', [AdminController::class, 'getAdminsCount']);//1
+        Route::get('getAllMembersCount', [AdminController::class, 'getAllMembersCount']);//1
+        Route::post('deleteUser/{user_id}', [AdminController::class, 'deleteUser']);//1
+        Route::post('deleteAdmin/{admin_id}', [AdminController::class, 'deleteAdmin']);//1
+        Route::post('deletePlanner/{planner_id}', [AdminController::class, 'deletePlanner']);//1
+        Route::post('deleteOwner/{owner_id}', [AdminController::class, 'deleteOwner']);//1
+        Route::post('deleteHall/{hall_id}', [AdminController::class, 'destroyHall']);//1
+        Route::post('deletePlan/{plan_id}', [AdminController::class, 'deletePlan']);//1
+        Route::get('getplan/{plan_id}', [AdminController::class, 'getplan']);//1
+        Route::get('gethall/{hall_id}', [AdminController::class, 'gethall']);//1
         Route::post('confirmHallRequest/{hall_id}', [AdminController::class, 'confirmHallRequest']);
         Route::post('rejectHallRequest/{hall_id}', [AdminController::class, 'rejectHallRequest']);
-        Route::get('getConfirmedHalls', [AdminController::class, 'getConfirmedHalls']);
-        Route::get('getUnConfirmedHalls', [AdminController::class, 'getUnConfirmedHalls']);
-        Route::get('getCanceledHalls', [AdminController::class, 'getCanceledHalls']);
-        Route::get('getAllHalls', [AdminController::class, 'getAllHalls']);
+        Route::get('getConfirmedHalls', [AdminController::class, 'getConfirmedHalls']);//1
+        Route::get('getUnConfirmedHalls', [AdminController::class, 'getUnConfirmedHalls']);//1
+        Route::get('getCanceledHalls', [AdminController::class, 'getCanceledHalls']);//1
+        Route::get('getAllHalls', [AdminController::class, 'getAllHalls']);//1
 
 
 

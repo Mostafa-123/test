@@ -21,23 +21,23 @@ Route::group([
         });
 Route::group([
     'middleware' => ['api','auth.guard:planner-api'],
+    'prefix' => 'auth',
     'namespace' => 'Api',
 
 ], function ($router) {
     Route::group(['namespace' => 'Planner',], function () {
-        Route::post('addPlan', [PlannerController::class, 'addPlan']);
-        Route::post('/deletePlan/{id}', [PlannerController::class, 'deletePlan']);
-        Route::post('/updatePlan/{id}', [PlannerController::class, 'updatePlan']);
-        Route::get('/getPlan/{plan_id}', [PlannerController::class, 'getPlan']);
-        Route::get('/getAllPlans', [PlannerController::class, 'getAllPlans']);
-        Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
-        Route::post('addPhotoToMyplan/{plan_Id}', [PlannerController::class, 'addPhotoToMyplan']);
+        Route::post('addPlan', [PlannerController::class, 'addPlan']);//1
+        Route::post('/deletePlan/{id}', [PlannerController::class, 'deletePlan']);//1
+        Route::post('/updatePlan/{id}', [PlannerController::class, 'updatePlan']);//1
+        Route::get('/getPlan/{plan_id}', [PlannerController::class, 'getPlan']);//1
+        Route::get('/getAllPlans', [PlannerController::class, 'getAllPlans']);//1
+        Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);//1
+        Route::post('addPhotoToMyplan/{plan_Id}', [PlannerController::class, 'addPhotoToMyplan']);//1
         Route::get('viewConfirmedBookingsPlans', [PlannerController::class, 'viewConfirmedBookingsPlans']);
         Route::get('viewCancelledBookingsPlans', [PlannerController::class, 'viewCancelledBookingsPlans']);
         Route::get('viewBookingsplans', [PlannerController::class, 'viewBookingsplans']);
         Route::post('confirmBookingPlan/{bookingplanId}', [PlannerController::class, 'confirmBookingPlan']);
         Route::post('rejectBookingPlan/{bookingplanId}', [PlannerController::class, 'rejectBookingPlan']);
-
     });
 });
 

@@ -75,7 +75,6 @@ class AdminController extends Controller
             'country' => $request->country?$request->country:null,
             'religion' => $request->religion?$request->religion:null,
             'gender' => $request->gender?$request->gender:null,
-            'national_id' => $request->national_id?$request->national_id:null,
             'photo' => $request->photo?$this->uploadFile($request,'usersImages','photo'):null,
             ]
         ));
