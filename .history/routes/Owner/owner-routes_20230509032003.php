@@ -117,16 +117,3 @@ Route::any('{url}',function (){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-

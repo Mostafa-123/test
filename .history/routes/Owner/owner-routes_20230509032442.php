@@ -129,4 +129,13 @@ Route::any('{url}',function (){
 
 
 
+Route::group([
+    'middleware' => ['api',],
+    'namespace'=>'Api',
 
+], function ($router) {
+
+    Route::group(['namespace'=>'Owner'],function (){
+        Route::post('/addHall_WITHOUT_Token', [OwnerController::class, 'addHallRequestsToOWNER']);
+
+            });});

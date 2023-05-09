@@ -74,7 +74,7 @@ class AuthController extends Controller
                     else {
                         // User authenticated with owner guard
                         return response()->json([
-                            'message' => 'Email or Password Doesn`t Exist,
+                            'message' => 'Email or Password Doesn`t Exist',
 
                         ], 201);
                     }

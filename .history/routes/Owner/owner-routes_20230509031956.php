@@ -72,7 +72,17 @@ Route::group([
 
 
 
+Route::group([
+    'middleware' => ['api','auth.guard:owner-api','VerifyToken:owner-api'],
+    'prefix' => 'auth',
+    'namespace'=>'Api',
 
+], function ($router) {
+
+    Route::group(['namespace'=>'Owner'],function (){
+        Route::post('updateOwner/{owner_id}', [AuthController::class, 'updateOwner']);
+        Route::get('ownerProfile', [AuthController::class, 'ownerProfile']);
+            })};
 
 
 
@@ -114,19 +124,6 @@ Route::group([
 Route::any('{url}',function (){
     return response()->json('this url not found', 401);
 })->where('url','.*')->middleware('api');
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

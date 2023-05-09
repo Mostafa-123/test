@@ -314,7 +314,6 @@ class AuthController extends Controller
             'planner' => new plannersResource($planner),
         ], 201);
 
-        registerUser
 
     }
     public function registerUser(Request $request) {

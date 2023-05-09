@@ -68,7 +68,7 @@ class OwnerController extends Controller
             'hours' => $request->hours, 'tables' => $request->tables,
             'type' => $request->type, 'capacity' => $request->capacity,
             'available' => $request->available,
-            'owner_id' = Auth::guard('api')->user()->id;
+            'owner_id' => Auth::guard('api')->user()->id,
             'start_party' => $request->start_party,
             'end_party' => $request->end_party
         ]);

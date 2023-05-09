@@ -154,7 +154,7 @@ class OwnerController extends Controller
         }
              }else{
                 return $this->response(null, 'halls is not saved', 405);
-            }}
+            }
     }
 
     public function getHallPhoto($hall_id, $photo_id)

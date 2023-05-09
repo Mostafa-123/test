@@ -37,7 +37,7 @@ class OwnerController extends Controller
 
     use GeneralTraits;
 
-    public function addHallRequestsToOWNER(Request $request)
+    public function addHallRequests(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
@@ -74,7 +74,7 @@ class OwnerController extends Controller
                 'available' => $request->available,
                 'verified' => "unconfirmed",
 
-                'owner_id' => '4',
+                'owner_id' => $request->id,
 
                 'start_party' => $request->start_party,
                 'end_party' => $request->end_party
