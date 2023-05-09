@@ -81,7 +81,7 @@ class OwnerController extends Controller
         $the_owner_id = Auth::guard('owner-api')->user()->id;
 
 
-        if( $the_owner_id = Auth::guard('owner-api')->user()->id;){
+        if( $the_owner_id ){
 
             $result = Hall::create([
                 'name' => $request->name,

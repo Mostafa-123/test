@@ -306,7 +306,7 @@ class AuthController extends Controller
         ));
 
         $credentials = $request->only(['email', 'password']);
-        Auth::guard('planner-api')->attempt($credentials)
+        Auth::guard('planner-api')->attempt($credentials);
 
 
         return response()->json([

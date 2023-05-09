@@ -12,7 +12,6 @@ use App\Models\Booking;
 use App\Http\Traits\GeneralTraits;
 use App\Http\Controllers\Controller;
 use App\Http\responseTrait;
-use App\Models\Comment;
 use App\Models\Owner;
 use App\Models\Photo;
 use App\Models\Service;
@@ -20,7 +19,6 @@ use App\Models\Show;
 use Illuminate\Support\Facades\DB;
 use App\Models\Video;
 use Exception;
-use Fruitcake\Cors\CorsService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,10 +34,10 @@ class OwnerController extends Controller
 {
 
     use responseTrait;
-    //use CorsService;
+
     use GeneralTraits;
 
-    public function addHallRequestsToOWNER(Request $request)
+    public function addHallRequests(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
@@ -76,7 +74,7 @@ class OwnerController extends Controller
                 'available' => $request->available,
                 'verified' => "unconfirmed",
 
-                'owner_id' => '4',
+                'owner_id' => $request->id,
 
                 'start_party' => $request->start_party,
                 'end_party' => $request->end_party
@@ -270,60 +268,56 @@ class OwnerController extends Controller
                     }
                 }
                 $shows = $hall->shows;
-                if (($request->shows)) {
-                    if ($request->shows[0]) {
-                        if ($shows) {
-                            for ($i = 0; $i < count($shows); $i++) {
-                                $path = $shows[$i]->showname;
+                if ($request->shows[0]) {
+                    if ($shows) {
+                        for ($i = 0; $i < count($shows); $i++) {
+                            $path = $shows[$i]->showname;
 
-                                $show = Show::where('showname', $path)->get();
-                                // print($photo[0]);die;
-                                $show[0]->delete();
-                            }
-                            for ($i = 0; $i < count($request->shows); $i++) {
-                                $path = $request->shows;
-                                Show::create([
-                                    'showname' => $path[$i],
-                                    'hall_id' => $hall->id,
-                                ]);
-                            }
-                        } else if ($shows == null) {
-                            for ($i = 0; $i < count($request->shows); $i++) {
-                                $path = $request->shows;
-                                Show::create([
-                                    'showname' => $path[$i],
-                                    'hall_id' => $hall->id,
-                                ]);
-                            }
+                            $show = Show::where('showname', $path)->get();
+                            // print($photo[0]);die;
+                            $show[0]->delete();
+                        }
+                        for ($i = 0; $i < count($request->shows); $i++) {
+                            $path = $request->shows;
+                            Show::create([
+                                'showname' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    } else if ($shows == null) {
+                        for ($i = 0; $i < count($request->shows); $i++) {
+                            $path = $request->shows;
+                            Show::create([
+                                'showname' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
                         }
                     }
                 }
                 $services = $hall->services;
-                if (($request->services)) {
-                    if ($request->services[0]) {
-                        if ($services) {
-                            for ($i = 0; $i < count($services); $i++) {
-                                $path = $services[$i]->servicename;
+                if ($request->services[0]) {
+                    if ($services) {
+                        for ($i = 0; $i < count($services); $i++) {
+                            $path = $services[$i]->servicename;
 
-                                $service = Service::where('servicename', $path)->get();
-                                // print($photo[0]);die;
-                                $service[0]->delete();
-                            }
-                            for ($i = 0; $i < count($request->services); $i++) {
-                                $path = $request->services;
-                                Service::create([
-                                    'servicename' => $path[$i],
-                                    'hall_id' => $hall->id,
-                                ]);
-                            }
-                        } else if ($services == null) {
-                            for ($i = 0; $i < count($request->services); $i++) {
-                                $path = $request->services;
-                                Service::create([
-                                    'servicename' => $path[$i],
-                                    'hall_id' => $hall->id,
-                                ]);
-                            }
+                            $service = Service::where('servicename', $path)->get();
+                            // print($photo[0]);die;
+                            $service[0]->delete();
+                        }
+                        for ($i = 0; $i < count($request->services); $i++) {
+                            $path = $request->services;
+                            Service::create([
+                                'servicename' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
+                        }
+                    } else if ($services == null) {
+                        for ($i = 0; $i < count($request->services); $i++) {
+                            $path = $request->services;
+                            Service::create([
+                                'servicename' => $path[$i],
+                                'hall_id' => $hall->id,
+                            ]);
                         }
                     }
                 }
@@ -419,7 +413,6 @@ class OwnerController extends Controller
     public function getHallComments($hall_id)
     {
         $hall = Hall::find($hall_id);
-        $hallComments=[];
         if ($hall) {
             $hallComments = Comment::where('hall_id', $hall_id)->get();
 
@@ -429,7 +422,7 @@ class OwnerController extends Controller
 
                         return $this->response('', 'this hall_id not found', 401);
         }
-        return response()->json($hallComments);
+          return response()->json($hallComments);
 
     }
 
@@ -570,8 +563,8 @@ class OwnerController extends Controller
 
 
 
-    public function getAllHallsByPrice(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('price','>',$request->minPrice)->where('price','<',$request->maxPrice)->get();
+    public function getAllHallsByPrice($minPrice,$maxPrice){
+        $halls=Hall::where('verified', 'confirmed')->where('price','>',$minPrice)->where('price','<',$maxPrice)->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -589,8 +582,8 @@ class OwnerController extends Controller
             return $this->response($data,"halls returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
-    public function getAllHallsByCountry(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('country',$request->country)->get();
+    public function getAllHallsByCountry($country){
+        $halls=Hall::where('verified', 'confirmed')->where('country',$country)->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -598,8 +591,8 @@ class OwnerController extends Controller
             return $this->response($data,"halls returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
-    public function getAllHallsByCity(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('city',$request->city)->get();
+    public function getAllHallsByCity($city){
+        $halls=Hall::where('verified', 'confirmed')->where('city',$city)->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -607,8 +600,8 @@ class OwnerController extends Controller
             return $this->response($data,"halls returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
-    public function getAllHallsByStreet(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('street',$request->street)->get();
+    public function getAllHallsByStreet($street){
+        $halls=Hall::where('verified', 'confirmed')->where('street',$street)->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -617,8 +610,8 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
 
-    public function getAllHallsByType(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('type',$request->type)->get();
+    public function getAllHallsByType($type){
+        $halls=Hall::where('verified', 'confirmed')->where('type',$type)->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);

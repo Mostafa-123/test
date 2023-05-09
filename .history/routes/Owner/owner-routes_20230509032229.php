@@ -34,29 +34,24 @@ Route::group([
 ], function ($router) {
 
     Route::group(['namespace'=>'Owner'],function (){
-        Route::post('updateOwner/{owner_id}', [AuthController::class, 'updateOwner']);//1
-        Route::get('ownerProfile', [AuthController::class, 'ownerProfile']);//1
+        Route::post('updateOwner/{owner_id}', [AuthController::class, 'updateOwner']);
+        Route::get('ownerProfile', [AuthController::class, 'ownerProfile']);
             });
 
-    Route::group(['namespace'=>'Owner'],function (){
-        // header('Access-Control-Allow-Origin: http://localhost:3000');
-        // header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        // header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Origin, Authorization');   // Hall   // Hall
-        Route::post('/addHall', [OwnerController::class, 'addHallRequests']);//1
-        Route::post('/deleteHall/{hall_id}', [OwnerController::class, 'destroyHall']);//1
-        Route::get('/getHall/{hall_id}', [OwnerController::class, 'gethall']);//1
-        Route::get('/getAllHalls', [OwnerController::class, 'getAllHalls']);//1
-        Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);//1
-        Route::get('/deleteAllOwnerHalls/{owner_id}', [OwnerController::class, 'deleteAllOwnerHalls']);
-        Route::post('/updateHall/{hall_id}', [OwnerController::class, 'updateHall']);//1
-        Route::post('addPhotoToMyhall/{hall_Id}', [OwnerController::class, 'addPhotoToMyhall']);//1
-        Route::post('addVideoToMyhall/{hall_Id}', [OwnerController::class, 'addVideoToMyhall']);//1
-        Route::post('getAllHallsByPrice', [OwnerController::class, 'getAllHallsByPrice']);//1
-        Route::post('getAllHallsByName', [OwnerController::class, 'getAllHallsByName']);//1
-        Route::post('getAllHallsByCity', [OwnerController::class, 'getAllHallsByCity']);//1
-        Route::post('getAllHallsByCountry', [OwnerController::class, 'getAllHallsByCountry']);//1
-        Route::post('getAllHallsByStreet', [OwnerController::class, 'getAllHallsByStreet']);//1
-        Route::post('getAllHallsByType', [OwnerController::class, 'getAllHallsByType']);//1
+    Route::group(['namespace'=>'Owner'],function (){   // Hall   // Hall
+        Route::post('/addHall', [OwnerController::class, 'addHallRequests']);
+        Route::post('/deleteHall/{hall_id}', [OwnerController::class, 'destroyHall']);
+        Route::get('/getHall/{hall_id}', [OwnerController::class, 'gethall']);
+        Route::get('/getAllHalls', [OwnerController::class, 'getAllHalls']);
+        Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);
+        Route::get('/deleteAllOwnerHalls/{owner_id}', [OwnerController::class, 'deleteAllOwnerHalls']);//??
+        Route::post('/updateHall/{hall_id}', [OwnerController::class, 'updateHall']);
+        Route::post('addPhotoToMyhall/{hall_Id}', [OwnerController::class, 'addPhotoToMyhall']);
+        Route::post('addVideoToMyhall/{hall_Id}', [OwnerController::class, 'addVideoToMyhall']);
+        Route::get('getAllHallsByPrice/{min_price}/{max_price}', [OwnerController::class, 'getAllHallsByPrice']);
+        Route::get('getAllHallsByName/{name}', [OwnerController::class, 'getAllHallsByName']);
+        Route::get('getAllHallsByCity/{city}', [OwnerController::class, 'getAllHallsByCity']);
+        Route::get('getAllHallsByType/{type}', [OwnerController::class, 'getAllHallsByType']);
         Route::get('DestroyAllHallRequest', [OwnerController::class, 'DestroyAllHallRequest']);
         Route::get('destroyHallRequest/{request_id}', [OwnerController::class, 'destroyHallRequest']);
         Route::post('updateAllInfoOfHallRequest/{user_id}', [OwnerController::class, 'updateAllInfoOfHallRequest']);
@@ -134,4 +129,14 @@ Route::any('{url}',function (){
 
 
 
+Route::group([
+    'middleware' => ['api',],
+    'prefix' => 'auth',
+    'namespace'=>'Api',
 
+], function ($router) {
+
+    Route::group(['namespace'=>'Owner'],function (){
+        Route::post('/addHall_WITHOUT_Token', [OwnerController::class, 'addHallRequestsToOWNER']);
+
+            });});
