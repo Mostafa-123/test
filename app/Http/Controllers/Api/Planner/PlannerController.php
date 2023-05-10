@@ -31,6 +31,10 @@ class PlannerController extends Controller
             'name' => 'required|max:255',
             'description' => 'required|max:255',
             'price' => 'required|numeric',
+            'country' => 'required|string',
+            'city' => 'required|string',
+            'address' => 'required|string',
+            'type' => 'required|string'
         ]);
         if ($validator->fails()) {
             return $this->response(null, $validator->errors(), 400);
@@ -58,10 +62,14 @@ class PlannerController extends Controller
         try {
             DB::beginTransaction();
             $result = Plan::create([
-                'planner_id' =>$planner_id,
+                'planner_id' => $planner_id,
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,
+                'country' => $request->country,
+                'city' => $request->city,
+                'address' => $request->address,
+                'type' => $request->type,
             ]);
             if ($request->photos) {
                 $request->photos[0];
@@ -84,31 +92,33 @@ class PlannerController extends Controller
             return $this->response('', $e, 401);
         }
     }
-    public function deletePlan($plan_id){
-        $plan=Plan::find($plan_id);
-        if($plan){
-            $photos=$plan->planPhotos;
-            if($photos){
-                for($i=0;$i<count($photos);$i++) {
-                    $path=$photos[$i]->photoname;
+    public function deletePlan($plan_id)
+    {
+        $plan = Plan::find($plan_id);
+        if ($plan) {
+            $photos = $plan->planPhotos;
+            if ($photos) {
+                for ($i = 0; $i < count($photos); $i++) {
+                    $path = $photos[$i]->photoname;
                     $this->deleteFile($path);
-                    }
                 }
+            }
             $plan->delete();
-            return $this->response('','plan deleted successfully',201);
+            return $this->response('', 'plan deleted successfully', 201);
         }
-        return $this->response('', 'this plan_id not found',401);
+        return $this->response('', 'this plan_id not found', 401);
     }
-    public function getPlanPhoto($plan_id,$photo_id){
-        $plan=Plan::find($plan_id);
-        if($plan){
-            $photo=PlanPhoto::find($photo_id);
-            if($photo){
+    public function getPlanPhoto($plan_id, $photo_id)
+    {
+        $plan = Plan::find($plan_id);
+        if ($plan) {
+            $photo = PlanPhoto::find($photo_id);
+            if ($photo) {
                 return $this->getFile($photo->photoname);
             }
-            return $this->response('', "This plan doesn't has photo",401);
+            return $this->response('', "This plan doesn't has photo", 401);
         }
-        return $this->response('', 'this plan_id not found',401);
+        return $this->response('', 'this plan_id not found', 401);
     }
     public function updatePlan(Request $request, $plan_id)
     {
@@ -145,13 +155,16 @@ class PlannerController extends Controller
                 $newData = [
                     'name' => $request->name,
                     'description' => $request->description,
-                    'price' => $request->price
+                    'price' => $request->price,
+                    'country' => $request->country,
+                    'city' => $request->city,
+                    'address' => $request->address,
+                    'type' => $request->type,
                 ];
                 $plan->update($newData);
                 DB::commit();
                 $plann = plan::find($plan_id);
                 return $this->response($this->planResources($plann), 'plan updated successfully', 200);
-
             } catch (Exception $e) {
                 DB::rollback();
                 return $this->response('0', $e, 401);
@@ -181,42 +194,138 @@ class PlannerController extends Controller
         return $this->response($this->planResources($plan), 'photos added successfully', 200);
     }
 
-    public function getplan($plan_id) {
-        $plan=Plan::find($plan_id);
-        if($plan){
-            return $this->response($this->planResources($plan),"a plan Data",201);
+    public function getplan($plan_id)
+    {
+        $plan = Plan::find($plan_id);
+        if ($plan) {
+            return $this->response($this->planResources($plan), "a plan Data", 201);
         }
-        return $this->response('',"this plan_id not found",401);
+        return $this->response('', "this plan_id not found", 401);
     }
 
 
-    public function getAllPlannerPlans($planner_id){
-        $planner=Planner::find($planner_id);
-        if($planner){
-            $plans=$planner->plan;
-            if($plans){
-                foreach($plans as $plan){
-                    $data[]=$this->planResources($plan);
+    public function getAllPlannerPlans($planner_id)
+    {
+        $planner = Planner::find($planner_id);
+        if ($planner) {
+            $plans = $planner->plan;
+            if ($plans) {
+                foreach ($plans as $plan) {
+                    $data[] = $this->planResources($plan);
                 }
-                return $this->response($data,"planner plans",201);
-            }return $this->response('',"This planner dosnt have plans",404);
-
-        }return $this->response('',"This planner id not found",401);
-    }
-    public function getAllPlans(){
-        $plans=Plan::get();
-        if($plans){
-                foreach($plans as $plan){
-                    $data[]=$this->planResources($plan);
+                return $this->response($data, "planner plans", 201);
             }
-            return $this->response($data,"plans returned successfuly",200);
-        }return $this->response('',"somthing wrong",401);
+            return $this->response('', "This planner dosnt have plans", 404);
+        }
+        return $this->response('', "This planner id not found", 401);
+    }
+    public function getAllProvides()
+    {
+        $plans = Plan::get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
     }
 
+    public function getAllPlans()
+    {
+        $plans = Plan::where('type', 'plan')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
 
+    public function getAllflowers()
+    {
+        $plans = Plan::where('type', 'flowers')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
 
+    public function getAllzaffatAndDj()
+    {
+        $plans = Plan::where('type', 'zaffatAndDj')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
 
+    public function getAllcake()
+    {
+        $plans = Plan::where('type', 'cake')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
 
+    public function getAlljallery()
+    {
+        $plans = Plan::where('type', 'jallery')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
+
+    public function getAllcatering()
+    {
+        $plans = Plan::where('type', 'catering')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
+
+    public function getAllbodycare()
+    {
+        $plans = Plan::where('type', 'bodycare')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
+
+    public function getAllcar()
+    {
+        $plans = Plan::where('type', 'car')->get();
+        if ($plans) {
+            foreach ($plans as $plan) {
+                $data[] = $this->planResources($plan);
+            }
+            return $this->response($data, "plans returned successfuly", 200);
+        }
+        return $this->response('', "somthing wrong", 401);
+    }
 
 
 
@@ -225,107 +334,98 @@ class PlannerController extends Controller
         $bookingplans = PlanRequest::where('status', 'confirmed')->get();
 
         return response()->json([
-                'message' => 'Pending bookings for plans retrieved successfully',
-                'data' => $bookingplans], 200);
-
+            'message' => 'Pending bookings for plans retrieved successfully',
+            'data' => $bookingplans
+        ], 200);
     }
     public function viewCancelledBookingsPlans()
     {
         $bookingplans = PlanRequest::where('status', 'cancelled')->get();
 
         return response()->json([
-                'message' => 'Pending bookings for plans retrieved successfully',
-                'data' => $bookingplans], 200);
-
+            'message' => 'Pending bookings for plans retrieved successfully',
+            'data' => $bookingplans
+        ], 200);
     }
     public function viewBookingsplans()
     {
         $bookingplans = PlanRequest::where('status', 'unconfirmed')->get();
 
         return response()->json([
-                'message' => 'Pending bookings for plans retrieved successfully',
-                'data' => $bookingplans], 200);
-
+            'message' => 'Pending bookings for plans retrieved successfully',
+            'data' => $bookingplans
+        ], 200);
     }
 
     public function confirmBookingPlan($bookingplanId)
     {
-         $bookingplan = PlanRequest::findOrFail($bookingplanId);
+        $bookingplan = PlanRequest::findOrFail($bookingplanId);
 
-       $planner  = $bookingplan->planner_id;
+        $planner  = $bookingplan->planner_id;
 
-       try {
-        $planner = Auth::guard('planner-api')->user();
-        if (!$planner) {
-            throw new JWTException('Invalid token');
-        }
-        $planner_id = $planner->id;
+        try {
+            $planner = Auth::guard('planner-api')->user();
+            if (!$planner) {
+                throw new JWTException('Invalid token');
+            }
+            $planner_id = $planner->id;
         } catch (JWTException $e) {
             $message = $e->getMessage();
             return response()->json(['message' => $message], 401);
         } catch (\Exception $e) {
-
         }
 
-    $actor_id = Auth::guard('planner-api')->user()->id;
+        $actor_id = Auth::guard('planner-api')->user()->id;
 
-    if($planner_id==$actor_id){
+        if ($planner_id == $actor_id) {
 
 
-        $bookingplan->status = 'confirmed';
-        $bookingplan->save();
+            $bookingplan->status = 'confirmed';
+            $bookingplan->save();
 
+            return response()->json([
+                'message' => 'Booking confirmed successfully',
+                'data' => $bookingplan
+            ], 200);
+        }
         return response()->json([
-            'message' => 'Booking confirmed successfully',
-            'data' => $bookingplan
+            'message' => 'Unauthorized',
         ], 200);
-
-    }        return response()->json([
-        'message' => 'Unauthorized',
-    ], 200);
-
     }
 
     public function rejectBookingPlan($bookingplanId)
     {
-         $bookingplan = PlanRequest::findOrFail($bookingplanId);
+        $bookingplan = PlanRequest::findOrFail($bookingplanId);
 
-       $planner  = $bookingplan->planner_id;
+        $planner  = $bookingplan->planner_id;
 
-       try {
-        $planner = Auth::guard('planner-api')->user();
-        if (!$planner) {
-            throw new JWTException('Invalid token');
-        }
-        $planner_id = $planner->id;
+        try {
+            $planner = Auth::guard('planner-api')->user();
+            if (!$planner) {
+                throw new JWTException('Invalid token');
+            }
+            $planner_id = $planner->id;
         } catch (JWTException $e) {
             $message = $e->getMessage();
             return response()->json(['message' => $message], 401);
         } catch (\Exception $e) {
-
         }
 
-    $actor_id = Auth::guard('planner-api')->user()->id;
+        $actor_id = Auth::guard('planner-api')->user()->id;
 
-    if($planner_id==$actor_id){
+        if ($planner_id == $actor_id) {
 
 
-        $bookingplan->status = 'cancelled';
-        $bookingplan->save();
+            $bookingplan->status = 'cancelled';
+            $bookingplan->save();
 
+            return response()->json([
+                'message' => 'Booking cancelled successfully',
+                'data' => $bookingplan
+            ], 200);
+        }
         return response()->json([
-            'message' => 'Booking cancelled successfully',
-            'data' => $bookingplan
+            'message' => 'Unauthorized',
         ], 200);
-
-    }        return response()->json([
-        'message' => 'Unauthorized',
-    ], 200);
-
     }
-
-
-
-
-
 }

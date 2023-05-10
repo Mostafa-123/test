@@ -64,6 +64,10 @@ trait responseTrait
             'planner'=>$planner,
             'name'=>$plan->name,
             'price'=>$plan->price,
+            'type'=>$plan->type,
+            'country'=>$plan->country,
+            'city'=>$plan->city,
+            'address'=>$plan->address,
             'description'=>$plan->description,
             'photos'=>$photo,
         ];
@@ -73,7 +77,7 @@ trait responseTrait
         $video[]=null;
         $service[]=null;
         $show[]=null;
-
+        $owner=new ownerResource($hall->owner);
         $photos=$hall->photos;
             if($photos){
                 $i=0;
@@ -103,6 +107,7 @@ trait responseTrait
                 }
             }
         return [
+            'owner'=>$owner,
             'id'=>$hall->id,
             'name'=>$hall->name,
             'address'=>$hall->address,

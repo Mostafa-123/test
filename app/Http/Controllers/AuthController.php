@@ -248,6 +248,7 @@ class AuthController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:10|max:20',
+            'type' => 'required|string',
             'photo'
         ]);
         if ($validator->fails()) {
@@ -464,6 +465,7 @@ class AuthController extends Controller
                 'religion' => $request->religion ? $request->religion : $planner->religion,
                 'gender' => $request->gender ? $request->gender : $planner->gender,
                 'phone' => $request->phone ? $request->phone : $planner->phone,
+                'type' => $request->type ? $request->type : $planner->type,
                 'photo' => $photo,
             ];
             $planner->update($newData);

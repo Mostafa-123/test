@@ -92,6 +92,8 @@ class AdminController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:5|max:25',
+            'type' => 'required|string',
+            'photo',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);

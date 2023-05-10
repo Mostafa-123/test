@@ -30,6 +30,7 @@ class plannersResource extends JsonResource
             'gender'=>$this->gender,
             'phone'=>$this->phone,
             'photo'=>$photo,
+            'type' =>$this->type,
             'token'=>$this->api_token,
         ];
     }

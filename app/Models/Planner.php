@@ -28,6 +28,7 @@ class Planner extends  Authenticatable  implements JWTSubject
         'gender',
         'phone',
         'photo',
+        'type',
 /*         'hall_id', */
 
 
