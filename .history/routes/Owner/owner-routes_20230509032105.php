@@ -139,4 +139,4 @@ Route::group([
     Route::group(['namespace'=>'Owner'],function (){
         Route::post('updateOwner/{owner_id}', [AuthController::class, 'updateOwner']);
         Route::get('ownerProfile', [AuthController::class, 'ownerProfile']);
-            })});
+            });});
