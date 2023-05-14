@@ -129,5 +129,5 @@ Route::any('{url}',function (){
     return response()->json('this url not found', 401);
 })->where('url','.*')->middleware('api');
 
-
+});
 

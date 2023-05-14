@@ -28,7 +28,6 @@ class ownerResource extends JsonResource
             'country'=>$this->country,
             'religion'=>$this->religion,
             'gender'=>$this->gender,
-            'phone'=>$this->phone,
             'photo'=>$photo,
             'token'=>$this->api_token,
         ];

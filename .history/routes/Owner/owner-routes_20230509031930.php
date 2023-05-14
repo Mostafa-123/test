@@ -126,4 +126,4 @@ Route::any('{url}',function (){
 })->where('url','.*')->middleware('api');
 
 
-
+});
