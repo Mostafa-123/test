@@ -438,20 +438,13 @@ class BookingController extends Controller
 
 
             'plan_id'=> 'integer',
+            'check_in_date'=> 'required|date',
+            'check_out_date'=> 'required|date|after:check_in_date',
 
 
 
 
-/*
-            'planner_id'=> 'required|integer',
-            'planner_name'=> 'required|string',
-            'user_id'=> 'required|integer',
-            'user_name'=> 'required|string',
-            'plan_id'=> 'required|integer',
-            'plan_name'=> 'required|string',
 
-            'price'=> 'required|integer',
-            'status'=> 'required|string', */
 
 
 
@@ -483,6 +476,8 @@ class BookingController extends Controller
                 'user_name' => auth::guard('user-api')->user()->name,
                 'plan_id' => $validatedData['plan_id'],
                 'plan_name' =>$plan->name,
+                'check_in_date' => $validatedData['check_in_date'],
+                'check_out_date' => $validatedData['check_out_date'],
                 'price' => $plan->price,
                 'status' =>'unconfirmed',
 

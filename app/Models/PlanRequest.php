@@ -24,6 +24,8 @@ class PlanRequest extends Model
         'plan_id',
         'plan_name',
         'price',
+        'check_in_date',
+        'check_out_date',
         'status',
 
 
