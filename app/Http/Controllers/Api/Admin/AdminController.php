@@ -223,7 +223,8 @@ class AdminController extends Controller
         $users=count(User::get());
         $owners=count(Owner::get());
         $admins=count(Admin::get());
-        $totalCount=$users+$admins+$owners+$planners;
+        $suppliers=count(Supplier::get());
+        $totalCount=$users+$admins+$owners+$planners+$suppliers;
         return $totalCount;
     }
 

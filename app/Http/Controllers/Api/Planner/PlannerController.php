@@ -31,9 +31,6 @@ class PlannerController extends Controller
             'name' => 'required|max:255',
             'description' => 'required|max:255',
             'price' => 'required|numeric',
-            'country' => 'required|string',
-            'city' => 'required|string',
-            'address' => 'required|string',
         ]);
         if ($validator->fails()) {
             return $this->response(null, $validator->errors(), 400);
@@ -65,9 +62,6 @@ class PlannerController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price,
-                'country' => $request->country,
-                'city' => $request->city,
-                'address' => $request->address,
             ]);
             if ($request->photos) {
                 $request->photos[0];
@@ -154,9 +148,6 @@ class PlannerController extends Controller
                     'name' => $request->name,
                     'description' => $request->description,
                     'price' => $request->price,
-                    'country' => $request->country,
-                    'city' => $request->city,
-                    'address' => $request->address,
                 ];
                 $plan->update($newData);
                 DB::commit();
@@ -227,103 +218,6 @@ class PlannerController extends Controller
         }
         return $this->response('', "somthing wrong", 401);
     }
-
-    // public function getAllPlans()
-    // {
-    //     $plans = Plan::where('type', 'plan')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllflowers()
-    // {
-    //     $plans = Plan::where('type', 'flowers')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllzaffatAndDj()
-    // {
-    //     $plans = Plan::where('type', 'zaffatAndDj')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllcake()
-    // {
-    //     $plans = Plan::where('type', 'cake')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAlljallery()
-    // {
-    //     $plans = Plan::where('type', 'jallery')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllcatering()
-    // {
-    //     $plans = Plan::where('type', 'catering')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllbodycare()
-    // {
-    //     $plans = Plan::where('type', 'bodycare')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
-    // public function getAllcar()
-    // {
-    //     $plans = Plan::where('type', 'car')->get();
-    //     if ($plans) {
-    //         foreach ($plans as $plan) {
-    //             $data[] = $this->planResources($plan);
-    //         }
-    //         return $this->response($data, "plans returned successfuly", 200);
-    //     }
-    //     return $this->response('', "somthing wrong", 401);
-    // }
-
 
 
     public function viewConfirmedBookingsPlans()

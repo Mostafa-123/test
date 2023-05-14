@@ -62,9 +62,6 @@ trait responseTrait
             'planner'=>$planner,
             'name'=>$plan->name,
             'price'=>$plan->price,
-            'country'=>$plan->country,
-            'city'=>$plan->city,
-            'address'=>$plan->address,
             'description'=>$plan->description,
             'photos'=>$photo,
         ];
