@@ -30,6 +30,20 @@ Route::group([
         Route::post('bookRoom', [ BookingController::class,'bookRoom']);
         Route::post('bookPlan', [ BookingController::class,'bookPlan']);
 
+
+
+        Route::get('/getUserAllBookings', [BookingController::class, 'getUserAllBookings']);//1
+        Route::get('/getUserConfirmedBookings', [BookingController::class, 'getUserConfirmedBookings']);//1
+        Route::get('/getUserUnConfirmedBookings', [BookingController::class, 'getUserUnConfirmedBookings']);//1
+        Route::get('/getUserCancelledBookings', [BookingController::class, 'getPlannerCancelledBookings']);//1
+
+        Route::get('/getUserAllPlanRequests', [BookingController::class, 'getUserAllPlanRequests']);//1
+        Route::get('/getUserConfirmedPlanRequests', [BookingController::class, 'getUserConfirmedPlanRequests']);//1
+        Route::get('/getUserUnConfirmedPlanRequests', [BookingController::class, 'getUserUnConfirmedPlanRequests']);//1
+        Route::get('/getUserCancelledPlanRequests', [BookingController::class, 'getPlannerCancelledPlanRequests']);//1
+
+
+
         Route::post('halls/{hall_id}/addLike', [InteractionsController::class, 'addLike']);
         Route::post('halls/{hall_id}/addComment', [InteractionsController::class, 'addComment']);
         Route::get('halls/{hall_id}/getComment', [InteractionsController::class, 'getComment']);

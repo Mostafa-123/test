@@ -383,6 +383,205 @@ class BookingController extends Controller
 
 
 
+    public function getUserAllPlanRequests()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = planRequest::where('user_id', $user_id)->get();
+
+    return response()->json($bookings);
+}
+
+
+
+    public function getUserConfirmedPlanRequests()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = planrequest::where('user_id', $user_id)->where('status', 'confirmed')->get();
+
+    return response()->json($bookings);
+}
+    public function getUserUnConfirmedPlanRequests()
+{
+
+    try {
+        $planner = Auth::guard('planner-api')->user();
+        if (!$planner) {
+            throw new JWTException('Invalid token');
+        }
+        $planner_id = $planner->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = planrequest::whereHas('plan.planner', function ($query) use ($planner_id) {
+        $query->where('id', $planner_id);
+    })->where('status', 'unconfirmed')->get();
+
+    return response()->json($bookings);
+}
+    public function getUserCancelledPlanRequests()
+{
+
+    try {
+        $planner = Auth::guard('planner-api')->user();
+        if (!$planner) {
+            throw new JWTException('Invalid token');
+        }
+        $planner_id = $planner->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = planrequest::whereHas('plan.planner', function ($query) use ($planner_id) {
+        $query->where('id', $planner_id);
+    })->where('status', 'cancelled')->get();
+
+    return response()->json($bookings);
+}
+
+
+public function getUserAllBookings()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = Booking::where('user_id', $user_id)->get();
+
+    return response()->json($bookings);
+}
+
+
+
+    public function getUserConfirmedBookings()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = Booking::where('user_id', $user_id)->where('status', 'confirmed')->get();
+
+    return response()->json($bookings);
+}
+    public function getUserUnConfirmedBookings()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = Booking::where('user_id', $user_id)->where('status', 'unconfirmed')->get();
+
+    return response()->json($bookings);
+}
+    public function getUserCancelledBookings()
+{
+
+    try {
+        $user = Auth::guard('user-api')->user();
+        if (!$user) {
+            throw new JWTException('Invalid token');
+        }
+        $user_id = $user->id;
+        } catch (JWTException $e) {
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], 401);
+        } catch (\Exception $e) {
+
+        }
+
+
+
+
+    $bookings = Booking::where('user_id', $user_id)->where('status', 'cancelled')->get();
+
+    return response()->json($bookings);
+}
+
+
+
 
 
 
