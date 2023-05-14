@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Api\Planner\supservicecontroller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Traits\GeneralTraits;
 use App\Http\Resources\adminResource;
 use App\Http\Resources\ownerResource;
 use App\Http\Resources\plannersResource;
-/* use App\Http\Resources\PlanResource;
- */
 use App\Http\Resources\personResource;
-
+use App\Http\Resources\SupplierResource;
 use App\Http\responseTrait;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Planner;
-use App\Models\Plan;
 use App\Models\Owner;
+use App\Models\Supplier;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Contracts\Providers\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -62,6 +60,9 @@ class AuthController extends Controller
             } elseif (Auth::guard('owner-api')->attempt($credentials)) {
                 // User authenticated with owner guard
                 return $this->loginOwner($credentials);
+            }elseif (Auth::guard('supplier-api')->attempt($credentials)) {
+                // User authenticated with owner guard
+                return $this->loginSupplier($credentials);
             } else {
                 // User dose not exit
                 return response()->json([
@@ -101,6 +102,9 @@ class AuthController extends Controller
                 case 'hallowner':
                     return $this->registerOwner($request);
                     break;
+                    case 'supplier':
+                        return $this->registerSupplier($request);
+                        break;
                 default:
                     return response()->json([
                         'message' => 'ERORR',
@@ -158,6 +162,17 @@ class AuthController extends Controller
         $planner->api_token = $token;
         //return token
         return $this->returnData('data',new plannersResource($planner), "data have returned");
+    }
+    public function loginSupplier($credentials)
+    {
+        $token = Auth::guard('supplier-api')->attempt($credentials);
+        if (!$token) {
+            return $this->returnError('E001', 'بيانات الدخول غير صحيحة');
+        }
+        $supplier = Auth::guard('supplier-api')->user();
+        $supplier->api_token = $token;
+        //return token
+        return $this->returnData('data',new SupplierResource($supplier), "data have returned");
     }
 
 
@@ -248,7 +263,6 @@ class AuthController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:10|max:20',
-            'type' => 'required|string',
             'photo'
         ]);
         if ($validator->fails()) {
@@ -274,6 +288,43 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'planner successfully registered',
             'data' => new plannersResource($plannerToken),
+        ], 201);
+    }
+    public function registerSupplier(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:admins|unique:users|unique:owners|unique:planners',
+            'password' => 'required|string|min:6',
+            'country' => 'required|string|max:100',
+            'religion' => 'required|string|max:100',
+            'gender' => 'required|string|max:100',
+            'phone' => 'required|string|min:10|max:20',
+            'photo'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        //$x = $request->only(['email', 'password']);
+        $supplier = Supplier::create(array_merge(
+            $validator->validated(),
+            [
+                'password' => bcrypt($request->password),
+                'photo' => $this->uploadFile($request, 'suppliersImages', 'photo'),
+            ]
+        ));
+
+        $credentials = $request->only(['email', 'password']);
+        $token = Auth::guard('supplier-api')->attempt($credentials);
+        if (!$token) {
+            return $this->returnError('E001', 'بيانات الدخول غير صحيحة');
+        }
+        $supplierToken = Auth::guard('supplier-api')->user();
+        $supplierToken->api_token = $token;
+
+        return response()->json([
+            'message' => 'supplier successfully registered',
+            'data' => new SupplierResource($supplierToken),
         ], 201);
     }
     public function registerUser(Request $request)
@@ -362,6 +413,17 @@ class AuthController extends Controller
         }
         return $this->response("", 'this user_id not found', 401);
     }
+    public function getSupplierPhoto($supplier_id)
+    {
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            if ($supplier->photo) {
+                return $this->getFile($supplier->photo);
+            }
+            return $this->response("", "This supplier doesn't has photo", 404);
+        }
+        return $this->response("", 'this supplier_id not found', 401);
+    }
 
 
 
@@ -383,6 +445,11 @@ class AuthController extends Controller
     {
         $planner = Auth::guard('planner-api')->user();
         return response()->json(new plannersResource($planner));
+    }
+    public function supplierProfile()
+    {
+        $supplier = Auth::guard('supplier-api')->user();
+        return response()->json(new SupplierResource($supplier));
     }
     public function userProfile()
     {
@@ -465,12 +532,37 @@ class AuthController extends Controller
                 'religion' => $request->religion ? $request->religion : $planner->religion,
                 'gender' => $request->gender ? $request->gender : $planner->gender,
                 'phone' => $request->phone ? $request->phone : $planner->phone,
-                'type' => $request->type ? $request->type : $planner->type,
                 'photo' => $photo,
             ];
             $planner->update($newData);
         }
         return $this->response(new plannersResource($planner), 'planner updated successfully', 201);
+    }
+    public function updateSupplier(Request $request, $supplier_id)
+    {
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $photo = $request->photo;
+            if ($photo && $supplier->photo) {
+                $this->deleteFile($supplier->photo);
+                $photo = $this->uploadFile($request, 'suppliersImages', 'photo');
+            } elseif ($photo != null && $supplier->photo == null) {
+                $photo = $this->uploadFile($request, 'suppliersImages', 'photo');
+            } else {
+                $photo = $supplier->photo;
+            }
+            $newData = [
+                'name' => $request->name ? $request->name : $supplier->name,
+                'password' => $request->password ? bcrypt($request->password): $supplier->password,
+                'country' => $request->country ? $request->country : $supplier->country,
+                'religion' => $request->religion ? $request->religion : $supplier->religion,
+                'gender' => $request->gender ? $request->gender : $supplier->gender,
+                'phone' => $request->phone ? $request->phone : $supplier->phone,
+                'photo' => $photo,
+            ];
+            $supplier->update($newData);
+        }
+        return $this->response(new SupplierResource($supplier), 'supplier updated successfully', 201);
     }
     public function updateUser(Request $request, $user_id)
     {
@@ -556,6 +648,21 @@ class AuthController extends Controller
         }
     }
     public function logoutPlanner(Request $request)
+    {
+        $token = $request->header('auth-token');
+        if ($token) {
+            try {
+
+                JWTAuth::setToken($token)->invalidate(); //logout
+            } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+                return  $this->returnError('', 'some thing went wrongs');
+            }
+            return $this->returnSuccessMessage('Logged out successfully');
+        } else {
+            $this->returnError('', 'some thing went wrongs');
+        }
+    }
+    public function logoutSupplier(Request $request)
     {
         $token = $request->header('auth-token');
         if ($token) {

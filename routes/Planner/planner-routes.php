@@ -30,15 +30,7 @@ Route::group([
         Route::post('/deletePlan/{id}', [PlannerController::class, 'deletePlan']);//1
         Route::post('/updatePlan/{id}', [PlannerController::class, 'updatePlan']);//1
         Route::get('/getPlan/{plan_id}', [PlannerController::class, 'getPlan']);//1
-        Route::get('/getAllProvides', [PlannerController::class, 'getAllProvides']);//1
         Route::get('/getAllPlans', [PlannerController::class, 'getAllPlans']);//1
-        Route::get('/getAllflowers', [PlannerController::class, 'getAllflowers']);//1
-        Route::get('/getAllzaffatAndDj', [PlannerController::class, 'getAllzaffatAndDj']);//1
-        Route::get('/getAllcake', [PlannerController::class, 'getAllcake']);//1
-        Route::get('/getAlljallery', [PlannerController::class, 'getAlljallery']);//1
-        Route::get('/getAllcatering', [PlannerController::class, 'getAllcatering']);//1
-        Route::get('/getAllbodycare', [PlannerController::class, 'getAllbodycare']);//1
-        Route::get('/getAllcar', [PlannerController::class, 'getAllcar']);//1
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);//1
         Route::post('addPhotoToMyplan/{plan_Id}', [PlannerController::class, 'addPhotoToMyplan']);//1
         Route::get('viewConfirmedBookingsPlans', [PlannerController::class, 'viewConfirmedBookingsPlans']);

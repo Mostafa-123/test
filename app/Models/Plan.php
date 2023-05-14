@@ -18,7 +18,7 @@ class Plan extends Model
 
 
 
-    protected $fillable=['name','planner_id','description','price','country','city','address','type'];
+    protected $fillable=['name','planner_id','description','price','country','city','address'];
     public function planner()
     {
         return  $this->belongsTo(Planner::class);

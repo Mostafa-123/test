@@ -61,6 +61,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'planners',
     ],
+        'supplier-api' => [
+            'driver' => 'jwt',
+            'provider' => 'suppliers',
+    ],
     ],
 
     /*
@@ -97,6 +101,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Planner::class,
         ],
+        'suppliers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Supplier::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
@@ -122,7 +130,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => 1440,
             'throttle' => 60,
         ],
     ],

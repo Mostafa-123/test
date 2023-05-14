@@ -15,3 +15,15 @@ class PlanPhoto extends Model
         return $this->belongsTo(Plan::class,'plan_id');
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -58,6 +58,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/Planner/planner-routes.php'));
 
 
+                Route::prefix('supplier')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/Supplier/supplier-routes.php'));
+
+
 
 
             Route::middleware('web')

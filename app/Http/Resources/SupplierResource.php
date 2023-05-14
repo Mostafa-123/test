@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class plannersResource extends JsonResource
+class SupplierResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,9 @@ class plannersResource extends JsonResource
     public function toArray($request)
     {
         $photo=$this->photo;
-        $role='planner';
+        $role='supplier';
         if($photo){
-            $photo="http://127.0.0.1:8000/planner/auth/plannerphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/supplier/auth/supplierphoto/".$this->id;
         }
         return [
             'id'=>$this->id,

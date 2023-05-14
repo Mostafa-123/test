@@ -2,21 +2,14 @@
 
 namespace App\Models;
 
-use App\Http\Resources\PlanResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\plan;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
-
-
-class Planner extends  Authenticatable  implements JWTSubject
+use App\Models\SubService;
+class Supplier extends Authenticatable  implements JWTSubject
 {
     use HasFactory;
-
-
     protected $fillable = [
 
         'name',
@@ -33,18 +26,10 @@ class Planner extends  Authenticatable  implements JWTSubject
 
 
     ];
-
-
-
-
-    function plan() {
-
-        return $this->hasMany(Plan::class);
-
+    public function subService()
+    {
+        return $this->hasMany(SubService::class);
     }
-
-
-
 
     public function getJWTIdentifier()
     {
@@ -60,15 +45,4 @@ class Planner extends  Authenticatable  implements JWTSubject
     {
         return [];
     }
-
-
-
-
-
-
-
-
-
-
-
 }

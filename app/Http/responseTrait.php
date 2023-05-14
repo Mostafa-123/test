@@ -6,12 +6,10 @@ use App\Models\Hall;
 use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
 use  App\Http\Resources\ownerResource;
 use App\Http\Resources\plannersResource;
+use App\Http\Resources\SupplierResource;
+use App\Models\SubService;
 
 trait responseTrait
 {
@@ -64,11 +62,33 @@ trait responseTrait
             'planner'=>$planner,
             'name'=>$plan->name,
             'price'=>$plan->price,
-            'type'=>$plan->type,
             'country'=>$plan->country,
             'city'=>$plan->city,
             'address'=>$plan->address,
             'description'=>$plan->description,
+            'photos'=>$photo,
+        ];
+    }
+    public function supServiceResources(SubService $service){
+        $photo[]=null;
+        $photos=$service->servicesPhoto;
+        $supplier=new SupplierResource($service->supplier);
+            if($photos){
+                $i=0;
+                for($i=0;$i<count($photos);$i++){
+                    $photo[$i]="http://127.0.0.1:8000/supplier/service/servicephoto/".$service->id."/".$photos[$i]->id;
+                }
+            }
+        return [
+            'id'=>$service->id,
+            'supplier'=>$supplier,
+            'name'=>$service->name,
+            'price'=>$service->price,
+            'type'=>$service->type,
+            'country'=>$service->country,
+            'city'=>$service->city,
+            'address'=>$service->address,
+            'description'=>$service->description,
             'photos'=>$photo,
         ];
     }

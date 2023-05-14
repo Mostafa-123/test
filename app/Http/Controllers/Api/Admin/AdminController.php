@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ownerResource;
 use App\Http\Resources\personResource;
 use App\Http\Resources\plannersResource;
+use App\Http\Resources\SupplierResource;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Http\responseTrait;
@@ -16,6 +17,8 @@ use App\Models\Hall;
 use App\Models\Owner;
 use App\Models\Plan;
 use App\Models\Planner;
+use App\Models\SubService;
+use App\Models\Supplier;
 use App\Models\User;
 
 class AdminController extends Controller
@@ -92,7 +95,6 @@ class AdminController extends Controller
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
             'phone' => 'required|string|min:5|max:25',
-            'type' => 'required|string',
             'photo',
         ]);
         if($validator->fails()){
@@ -160,6 +162,35 @@ class AdminController extends Controller
             'admin' => new adminResource($admin),
         ], 201);
     }
+    public function addSupplier(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:admins|unique:users|unique:owners|unique:planners',
+            'password' => 'required|string|min:6',
+            'country' => 'required|string|max:100',
+            'religion' => 'required|string|max:100',
+            'gender' => 'required|string|max:100',
+            'phone' => 'required|string|min:5|max:25',
+            'photo',
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        //$x = $request->only(['email', 'password']);
+        $supplier = Supplier::create(array_merge(
+            $validator->validated(),
+            ['password' => bcrypt($request->password),
+            'country' => $request->country?$request->country:null,
+            'religion' => $request->religion?$request->religion:null,
+            'gender' => $request->gender?$request->gender:null,
+            'photo' => $request->photo?$this->uploadFile($request,'suppliersImages','photo'):null,
+            ]
+        ));
+        return response()->json([
+            'message' => 'supplier successfully added',
+            'planner' => new SupplierResource($supplier),
+        ], 201);
+    }
 
 
 
@@ -178,6 +209,10 @@ class AdminController extends Controller
     public function getPlannersCount(){
         $planners=count(Planner::get());
         return $planners;
+    }
+    public function getSupplierCount(){
+        $suppliers=count(Supplier::get());
+        return $suppliers;
     }
     public function getAdminsCount(){
         $admins=count(Admin::get());
@@ -213,6 +248,15 @@ class AdminController extends Controller
                     $data[]=new plannersResource($planner);
             }
             return $this->response($data,"planners returned successfuly",200);
+        }return $this->response('',"somthing wrong",401);
+    }
+    public function getAllSuppliers(){
+        $suppliers=Supplier::get();
+        if($suppliers){
+                foreach($suppliers as $supplier){
+                    $data[]=new SupplierResource($supplier);
+            }
+            return $this->response($data,"suppliers returned successfuly",200);
         }return $this->response('',"somthing wrong",401);
     }
     public function getAllOwners(){
@@ -284,6 +328,20 @@ class AdminController extends Controller
             return $this->response('','The planner  deleted',200);
             }
     }
+    public function deleteSupplier($supplier_id){
+        $supplier=Supplier::find($supplier_id);
+
+        if(!$supplier){
+            return $this->response(null,'The supplier  Not Found',404);
+        }else if ($supplier){
+            $photo=$supplier->photo;
+            if($photo){
+                    $this->deleteFile($photo);
+                }
+            $supplier->delete();
+            return $this->response('','The supplier  deleted',200);
+            }
+    }
 
     public function deleteOwner($owner_id){
         $owner=Owner::find($owner_id);
@@ -345,6 +403,21 @@ class AdminController extends Controller
         }
         return $this->response('', 'this plan_id not found',401);
     }
+    public function deleteService($service_id){
+        $service=SubService::find($service_id);
+        if($service){
+            $photos=$service->servicePhoto;
+            if($photos){
+                for($i=0;$i<count($photos);$i++) {
+                    $path=$photos[$i]->photoname;
+                    $this->deleteFile($path);
+                    }
+                }
+            $service->delete();
+            return $this->response('','service deleted successfully',201);
+        }
+        return $this->response('', 'this service_id not found',401);
+    }
 
 
 
@@ -355,6 +428,14 @@ class AdminController extends Controller
             return $this->response($this->planResources($plan),"a plan Data",201);
         }
         return $this->response('',"this plan_id not found",401);
+    }
+
+    public function getservice($service_id) {
+        $service=SubService::find($service_id);
+        if($service){
+            return $this->response($this->supServiceResources($service),"a service Data",201);
+        }
+        return $this->response('',"this service_id not found",401);
     }
 
     public function gethall($hall_id) {
