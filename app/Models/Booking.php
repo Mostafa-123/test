@@ -116,4 +116,10 @@ public function getStatusLabelAttribute()
 
     }
 
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
+    }
+
 }
