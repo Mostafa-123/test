@@ -3,6 +3,7 @@ use App\Http\Controllers;
 use App\Http\Controllers\Api\Planner\PlannerAuthController ;
 use App\Http\Controllers\Api\Planner\PlannerController ;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' => ['api','auth.guard:planner-api'],
@@ -38,6 +39,15 @@ Route::group([
         Route::get('viewBookingsplans', [PlannerController::class, 'viewBookingsplans']);
         Route::post('confirmBookingPlan/{bookingplanId}', [PlannerController::class, 'confirmBookingPlan']);
         Route::post('rejectBookingPlan/{bookingplanId}', [PlannerController::class, 'rejectBookingPlan']);
+
+
+
+        Route::get('/getPlannerAllBookings', [BookingController::class, 'getPlannerAllBookings']);//1
+        Route::get('/getPlannerConfirmedBookings', [BookingController::class, 'getPlannerConfirmedBookings']);//1
+        Route::get('/getPlannerUnConfirmedBookings', [BookingController::class, 'getPlannerUnConfirmedBookings']);//1
+        Route::get('/getPlannerCancelledBookings', [BookingController::class, 'getPlannerCancelledBookings']);//1
+
+
     });
 });
 
