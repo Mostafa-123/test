@@ -64,13 +64,14 @@ class PlannerController extends Controller
                 'price' => $request->price,
             ]);
             if ($request->photos) {
-                $request->photos[0];
-                for ($i = 0; $i < count($request->photos); $i++) {
-                    $path = $this->uploadMultiFile($request, $i, 'planPhotos', 'photos');
-                    PlanPhoto::create([
-                        'photoname' => $path,
-                        'plan_id' => $result->id,
-                    ]);
+                if ($request->photos[0]) {
+                    for ($i = 0; $i < count($request->photos); $i++) {
+                        $path = $this->uploadMultiFile($request, $i, 'planPhotos', 'photos');
+                        PlanPhoto::create([
+                            'photoname' => $path,
+                            'plan_id' => $result->id,
+                        ]);
+                    }
                 }
             }
             DB::commit();
