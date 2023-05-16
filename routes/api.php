@@ -62,12 +62,12 @@ Route::group([
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
         Route::get('/getHall/{hall_id}', [UserController::class, 'gethall']);
-        Route::get('/getAllHallsByPrice/{max}/{min}', [OwnerController::class, 'getAllHallsByPrice']);
+        Route::post('/getAllHallsByPrice', [OwnerController::class, 'getAllHallsByPrice']);
         Route::post('getAllHallsByName', [OwnerController::class, 'getAllHallsByName']);
-        Route::get('getAllHallsByCountry/{country}', [OwnerController::class, 'getAllHallsByCountry']);
-        Route::get('getAllHallsByCity/{city}', [OwnerController::class, 'getAllHallsByCity']);
-        Route::get('getAllHallsByStreet/{street}', [OwnerController::class, 'getAllHallsByStreet']);
-        Route::get('getAllHallsByType/{type}', [OwnerController::class, 'getAllHallsByType']);
+        Route::post('getAllHallsByCountry', [OwnerController::class, 'getAllHallsByCountry']);
+        Route::post('getAllHallsByCity', [OwnerController::class, 'getAllHallsByCity']);
+        Route::post('getAllHallsByStreet', [OwnerController::class, 'getAllHallsByStreet']);
+        Route::post('getAllHallsByType', [OwnerController::class, 'getAllHallsByType']);
 
 
         Route::post('addHall_WITHOUT_Token', [OwnerController::class, 'addHallRequestsToOWNER']);
