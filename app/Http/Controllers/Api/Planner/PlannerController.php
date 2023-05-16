@@ -85,6 +85,10 @@ class PlannerController extends Controller
             return $this->response('', $e, 401);
         }
     }
+
+
+
+
     public function deletePlan($plan_id)
     {
         $plan = Plan::find($plan_id);
