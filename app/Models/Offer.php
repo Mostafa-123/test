@@ -16,6 +16,7 @@ class Offer extends Model
 
 
         'hall_id',
+        'hall_name',
         'start_date',
         'end_date',
         'price',

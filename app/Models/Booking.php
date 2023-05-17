@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Owner;
 use App\Models\Hall;
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use DateTimeInterface;
 
@@ -121,5 +122,11 @@ public function getStatusLabelAttribute()
     {
         return $this->belongsTo(Plan::class);
     }
+
+
+
+
+
+
 
 }

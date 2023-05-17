@@ -62,4 +62,13 @@ class Owner extends  Authenticatable  implements JWTSubject
         return [];
     }
 
+
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class,);
+    }
+
+
+
 }

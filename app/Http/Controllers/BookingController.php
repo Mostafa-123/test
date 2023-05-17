@@ -980,9 +980,76 @@ public function getUserAllBookings()
 
 
 
+    public function calculateTotalPrice(Request $request )
+{
+
+    $validatedData = $request->validate([
+        'hall_id' => 'required',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date',
+    ]);
+
+    $hall_id = $validatedData['hall_id'];
+    $start_date = $validatedData['start_date'];
+    $end_date = $validatedData['end_date'];
+
+
+    $owner_id = Auth::guard('owner-api')->user()->id;
+
+    $bookings = Booking::whereHas('hall.owner', function ($query) use ($owner_id, $hall_id) {
+        $query->where('id', $owner_id)->where('status', 'confirmed')->where('hall_id', $hall_id);
+    })
+    ->where(function ($query) use ($start_date, $end_date) {
+        $query->whereBetween('check_in_date', [$start_date, $end_date])
+            ->orWhereBetween('check_out_date', [$start_date, $end_date])
+            ->orWhere(function ($query) use ($start_date, $end_date) {
+                $query->where('check_in_date', '<', $start_date)
+                    ->where('check_out_date', '>', $end_date);
+            });
+    })
+    ->get();
+
+    $totalPrice = 0;
+
+    foreach ($bookings as $booking) {
+        $totalPrice += $booking->price;
+    }
+
+    return response()->json([
+        'message' => 'Sum',
+        'booking' => $totalPrice,
+    ]);
+}
 
 
 
+// public function calculateRevenue(Request $request)
+// {
+//     $startDate = $request->input('start_date');
+//     $endDate = $request->input('end_date');
+//     $hall_id = $request->input('hall_id');
+
+//     $owner = auth::guard('owner-api')->user(); // Assuming the authenticated user is the owner
+//     $owner_id = auth::guard('owner-api')->user()->id; // Assuming the authenticated user is the owner
+
+
+//     $bookings = Booking::whereHas('hall.owner', function ($query) use ($owner_id) {
+//         $query->where('hall_id', '1')
+//             ->where('id', $owner_id)
+//             ->where('check_in_date', '2023-04-18')
+//             ->where('check_out_date', '2023-04-20');
+//     })->get();
+
+
+
+//     $bookings = $owner->bookings()
+//         ->where('status', 'confirmed')
+//         ->whereBetween('check_in_date', [$startDate, $endDate])
+//         ->get();
+//     $revenue = $bookings->sum('price');
+
+//     return response()->json(['revenue' => $revenue]);
+// }
 
 
 

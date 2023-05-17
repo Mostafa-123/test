@@ -39,9 +39,7 @@ Route::group([
             });
 
     Route::group(['namespace'=>'Owner'],function (){
-        // header('Access-Control-Allow-Origin: http://localhost:3000');
-        // header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        // header('Access-Control-Allow-Headers: Content-Type, X-Auth-Token, Origin, Authorization');   // Hall   // Hall
+
         Route::post('/addHall', [OwnerController::class, 'addHallRequests']);//1
         Route::post('/deleteHall/{hall_id}', [OwnerController::class, 'destroyHall']);//1
         Route::get('/getHall/{hall_id}', [OwnerController::class, 'gethall']);//1
@@ -67,6 +65,12 @@ Route::group([
  */        Route::post('/bookings', [BookingController::class, 'bookRoom']);
            Route::post('/avl', [BookingController::class, 'getAvailableHalls']);
            Route::get('/viewBookings', [BookingController::class, 'viewBookings']);
+
+
+           Route::get('/HallTotalRevenue', [BookingController::class, 'HallTotalRevenue']);
+           Route::get('/calculateTotalPrice', [BookingController::class, 'calculateTotalPrice']);
+           Route::get('/calculateRevenue', [BookingController::class, 'calculateRevenue']);
+
 
 
 
