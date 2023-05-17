@@ -26,6 +26,7 @@ class OfferController extends Controller
         $special_offer = new Offer([
             'hall_id' => $request->input('hall_id'),
             'hall_name' => $request->input('hall_name'),
+            'package_description' => $request->input('package_description'),
             'start_date' => $request->input('start_date'),
             'end_date' => $request->input('end_date'),
             'price' => $request->input('price'),

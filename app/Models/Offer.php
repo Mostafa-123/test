@@ -20,6 +20,7 @@ class Offer extends Model
         'start_date',
         'end_date',
         'price',
+        'package_description',
 
 
 
