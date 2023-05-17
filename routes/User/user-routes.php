@@ -50,6 +50,13 @@ Route::group([
 
 
 
+        Route::post('addFavourite/{hall_id}', [InteractionsController::class, 'addFavourite']);
+        Route::delete('removeFavourite/{hall_id}', [InteractionsController::class, 'removeFavourite']);
+        Route::get('getFavourite', [InteractionsController::class, 'getFavourite']);
+
+
+
+
         Route::post('halls/{hall_id}/addLike', [InteractionsController::class, 'addLike']);
         Route::post('halls/{hall_id}/addComment', [InteractionsController::class, 'addComment']);
         Route::get('halls/{hall_id}/getComment', [InteractionsController::class, 'getComment']);
