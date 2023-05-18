@@ -4,6 +4,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InteractionsController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\hallsController;
 use App\Http\Controllers\Api\Owner\OwnerController;
@@ -59,6 +60,7 @@ Route::group([
 
 
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
+        Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);
         Route::get('/getAllSupplierServices/{owner_id}', [SupplierController::class, 'getAllSupplierServices']);
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);

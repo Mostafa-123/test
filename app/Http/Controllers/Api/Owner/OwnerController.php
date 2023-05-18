@@ -722,7 +722,21 @@ class OwnerController extends Controller
 
 
 
-
+    public function getAllOwnerHalls1($owner_id)
+    {
+        $owner = Owner::find($owner_id);
+        if ($owner) {
+            $halls = $owner->hall;
+            if ($plans) {
+                foreach ($halls as $hall) {
+                    $data[] = $this->planResources($hall);
+                }
+                return $this->response($data, "Owner`s Halls", 201);
+            }
+            return $this->response('', "This Owner dosnt have Halls", 404);
+        }
+        return $this->response('', "This Owner id not found", 401);
+    }
 
 
 

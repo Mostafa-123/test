@@ -89,6 +89,10 @@ public function offers()
 {
     return $this->hasMany(Offer::class);
 }
+public function bookings()
+{
+    return $this->hasMany(Bookings::class);
+}
 
 
 

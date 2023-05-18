@@ -41,6 +41,60 @@ class BookingController extends Controller
     }
 
 
+    public function HallTotalRevenue(Request $request)
+    {
+        $validatedData = $request->validate([
+            'hall_id'=> 'required|integer',
+            'check_in_date'=> 'required|date',
+            'check_out_date'=> 'required|date|after:check_in_date',
+        ]);
+
+        $start_date = $validatedData['check_in_date'];
+        $end_date = $validatedData['check_out_date'];
+        $hall_id = $validatedData['hall_id'];
+
+        $owner_id = Auth::guard('owner-api')->user()->id;
+
+        $query = Booking::where('hall_id', $hall_id)
+            ->whereHas('hall', function ($query) use ($owner_id) {
+                $query->where('owner_id', $owner_id);
+            })
+            ->where('status', 'confirmed');
+
+        if ($start_date && $end_date) {
+            $query->whereBetween('date', [$start_date, $end_date]);
+        } elseif ($start_date) {
+            $query->where('date', '>=', $start_date);
+        } else {
+            $oldestBookingDate = Booking::where('hall_id', $hall_id)
+                ->whereHas('hall', function ($query) use ($owner_id) {
+                    $query->where('owner_id', $owner_id);
+                })
+                ->where('status', 'confirmed')
+                ->orderBy('date', 'asc')
+                ->value('date');
+
+            if ($oldestBookingDate) {
+                $query->where('date', '>=', $oldestBookingDate);
+            }
+        }
+
+        $end_date = $end_date ?? Carbon::today()->format('Y-m-d');
+        $query->where('date', '<=', $end_date);
+
+        $bookings = $query->get();
+
+        $totalRevenue = 0;
+
+        foreach ($bookings as $booking) {
+            $totalRevenue += $booking->price;
+        }
+
+        return response()->json([
+            'message' => 'Success',
+            'total_revenue' => $totalRevenue,
+        ]);
+    }
 
 
 
@@ -985,27 +1039,18 @@ public function getUserAllBookings()
 
     $validatedData = $request->validate([
         'hall_id' => 'required',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date',
+
     ]);
 
     $hall_id = $validatedData['hall_id'];
-    $start_date = $validatedData['start_date'];
-    $end_date = $validatedData['end_date'];
+
 
 
     $owner_id = Auth::guard('owner-api')->user()->id;
 
     $bookings = Booking::whereHas('hall.owner', function ($query) use ($owner_id, $hall_id) {
         $query->where('id', $owner_id)->where('status', 'confirmed')->where('hall_id', $hall_id);
-    })
-    ->where(function ($query) use ($start_date, $end_date) {
-        $query->whereBetween('check_in_date', [$start_date, $end_date])
-            ->orWhereBetween('check_out_date', [$start_date, $end_date])
-            ->orWhere(function ($query) use ($start_date, $end_date) {
-                $query->where('check_in_date', '<', $start_date)
-                    ->where('check_out_date', '>', $end_date);
-            });
+
     })
     ->get();
 
@@ -1020,6 +1065,9 @@ public function getUserAllBookings()
         'booking' => $totalPrice,
     ]);
 }
+
+
+
 
 
 
