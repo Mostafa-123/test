@@ -65,12 +65,12 @@ Route::group([
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
         Route::get('/getHall/{hall_id}', [UserController::class, 'gethall']);
-        Route::get('/getAllHallsByPrice', [OwnerController::class, 'getAllHallsByPrice']);
-        Route::get('getAllHallsByName', [OwnerController::class, 'getAllHallsByName']);
-        Route::get('getAllHallsByCountry', [OwnerController::class, 'getAllHallsByCountry']);
-        Route::get('getAllHallsByCity', [OwnerController::class, 'getAllHallsByCity']);
-        Route::get('getAllHallsByStreet', [OwnerController::class, 'getAllHallsByStreet']);
-        Route::get('getAllHallsByType', [OwnerController::class, 'getAllHallsByType']);
+        Route::post('/getAllHallsByPrice', [OwnerController::class, 'getAllHallsByPrice']);
+        Route::post('getAllHallsByName', [OwnerController::class, 'getAllHallsByName']);
+        Route::post('getAllHallsByCountry', [OwnerController::class, 'getAllHallsByCountry']);
+        Route::post('getAllHallsByCity', [OwnerController::class, 'getAllHallsByCity']);
+        Route::post('getAllHallsByStreet', [OwnerController::class, 'getAllHallsByStreet']);
+        Route::post('getAllHallsByType', [OwnerController::class, 'getAllHallsByType']);
 
 
         Route::get('getAllUsers', [AdminController::class, 'getAllUsers']);//1
