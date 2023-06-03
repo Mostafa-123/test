@@ -4,9 +4,11 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InteractionsController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\hallsController;
 use App\Http\Controllers\Api\Owner\OwnerController;
+use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Planner\PlannerController;
 use App\Http\Controllers\Api\Planner\SupplierController;
 use Illuminate\Http\Request;
@@ -40,6 +42,7 @@ Route::group([
         Route::post('switchLogin', [AuthController::class, 'switchLogin'])->name('login-admin');
         Route::post('switchRegister', [AuthController::class, 'switchRegister']);
 
+        Route::get('anyProfile/{email}', [AuthController::class, 'anyProfile']);
 
             });
 
@@ -55,6 +58,7 @@ Route::group([
         Route::post('bookRoom', [ BookingController::class,'bookRoom']);
 
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
+        Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);
         Route::get('/getAllSupplierServices/{owner_id}', [SupplierController::class, 'getAllSupplierServices']);
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
@@ -65,6 +69,17 @@ Route::group([
         Route::post('getAllHallsByCity', [OwnerController::class, 'getAllHallsByCity']);
         Route::post('getAllHallsByStreet', [OwnerController::class, 'getAllHallsByStreet']);
         Route::post('getAllHallsByType', [OwnerController::class, 'getAllHallsByType']);
+
+
+        Route::get('getAllUsers', [AdminController::class, 'getAllUsers']);//1
+        Route::get('getAllPlanners', [AdminController::class, 'getAllPlanners']);//1
+        Route::get('getAllSuppliers', [AdminController::class, 'getAllSuppliers']);//1
+        Route::get('getAllOwners', [AdminController::class, 'getAllOwners']);//1
+        Route::get('getAllAdmins', [AdminController::class, 'getAllAdmins']);//1
+        Route::get('getUserCount', [AdminController::class, 'getUserCount']);//1
+        Route::get('getOwnersCount', [AdminController::class, 'getOwnersCount']);//1
+        Route::get('getPlannersCount', [AdminController::class, 'getPlannersCount']);//1
+        Route::get('getSuppliersCount', [AdminController::class, 'getSupplierCount']);//1
 
 
         Route::post('addHall_WITHOUT_Token', [OwnerController::class, 'addHallRequestsToOWNER']);

@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use App\Models\Favourite;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -73,6 +75,10 @@ class User extends Authenticatable implements JWTSubject
     public function likes()
     {
         return $this->hasMany(like::class);
+    }
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class);
     }
 
     public function comments()

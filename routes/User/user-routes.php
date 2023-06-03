@@ -29,6 +29,7 @@ Route::group([
 
         Route::post('bookRoom', [ BookingController::class,'bookRoom']);
         Route::post('bookPlan', [ BookingController::class,'bookPlan']);
+        Route::post('bookSubService', [ BookingController::class,'bookSubService']);
 
 
 
@@ -41,6 +42,18 @@ Route::group([
         Route::get('/getUserConfirmedPlanRequests', [BookingController::class, 'getUserConfirmedPlanRequests']);//1
         Route::get('/getUserUnConfirmedPlanRequests', [BookingController::class, 'getUserUnConfirmedPlanRequests']);//1
         Route::get('/getUserCancelledPlanRequests', [BookingController::class, 'getPlannerCancelledPlanRequests']);//1
+
+        Route::get('/getUserAllSubRequests', [BookingController::class, 'getUserAllSubRequests']);//1
+        Route::get('/getUserConfirmedSubRequests', [BookingController::class, 'getUserConfirmedSubRequests']);//1
+        Route::get('/getUserUnConfirmedSubRequests', [BookingController::class, 'getUserUnConfirmedSubRequests']);//1
+        Route::get('/getUserCancelledSubRequests', [BookingController::class, 'getPlannerCancelledSubRequests']);//1
+
+
+
+        Route::post('addFavourite/{hall_id}', [InteractionsController::class, 'addFavourite']);
+        Route::delete('removeFavourite/{hall_id}', [InteractionsController::class, 'removeFavourite']);
+        Route::get('getFavourite', [InteractionsController::class, 'getFavourite']);
+
 
 
 

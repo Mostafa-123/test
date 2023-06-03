@@ -12,7 +12,9 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\Comment;
 use App\Models\Like;
+use App\Models\Favourite;
 use App\Http\Traits\GeneralTraits;
+
 
 class InteractionsController extends Controller
 {
@@ -171,7 +173,7 @@ class InteractionsController extends Controller
         return response()->json(['message' => 'Post liked.']);
         }
         else{
-            response()->json(['message' => 'HALL ID IS WRONG.']);
+            return $this->removeLike($hall_id);
         }
 
 
@@ -184,7 +186,7 @@ class InteractionsController extends Controller
         ->where('id',$like_id)->first();
 
         if($likes)/* Check if Hall Id is valid */{
-            if ($likes->user_id==$request->user()->id){
+            if ($likes->user_id==Auth::guard('user-api')->user()->id){
                 $likes->delete();
                 return   response()->json(['message' => 'likes Successfully Deleted .',
 
@@ -203,8 +205,90 @@ class InteractionsController extends Controller
 
 
 
+    public function addFavourite($hall_id)
+{
+    $thehall = Hall::where('id', $hall_id)->where('verified', 'confirmed')->first();
+    $user_id = Auth::guard('user-api')->user()->id;
+
+    if ($thehall) {
+        $fav = Favourite::where('hall_id', $hall_id)->where('user_id', $user_id)->first();
+
+        if (!$fav) {
+            $like = Favourite::create([
+                'hall_id' => $thehall->id,
+                'user_id' => $user_id,
+                'user_name' => Auth::guard('user-api')->user()->name,
+            ]);
+
+            $like->load('users');
+            $like->load('halls');
+
+            return response()->json(['message' => 'Added To Favorites.']);
+        } else {
+            return $this->removeFavourite($hall_id);
+        }
+    } else {
+        return response()->json(['message' => 'HALL ID IS WRONG.'], 404);
+    }
+}
 
 
+
+    public function removeFavourite($hall_id)
+    {
+        $fav = Favourite::with(['users'])
+        ->where('hall_id',$hall_id)->first();
+
+        if($fav)/* Check if Hall Id is valid */{
+            if ($fav->user_id==Auth::guard('user-api')->user()->id){
+                $fav->delete();
+                return   response()->json(['message' => 'UnFavourited Successfully  .',
+
+                ],200);
+
+
+            }   else{
+                return  response()->json(['message' => 'Access denied  here.'],403);
+            }
+        }    else{
+            return  response()->json(['message' => ' not in favourites found.'],404);
+        }
+
+    }
+
+
+
+    public function getFavourite(Request $requestd)
+    {
+
+        $user=Auth::guard('user-api')->user();
+
+
+        $favorites = $user->favourites;
+
+
+        if($favorites){
+
+            return response()->json([
+
+                'message'=>'Returned Successfully ',
+                'favourites'=>$favorites
+
+            ],200);
+
+        }
+
+
+
+
+
+        else{
+            return  response()->json(['message' => 'NOT Found'],404);
+        }
+
+
+
+    }
 
 
 
