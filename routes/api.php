@@ -54,8 +54,6 @@ Route::group([
 
         Route::post('bookRoom', [ BookingController::class,'bookRoom']);
 
-
-
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
         Route::get('/getAllSupplierServices/{owner_id}', [SupplierController::class, 'getAllSupplierServices']);
 
