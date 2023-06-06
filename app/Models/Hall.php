@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Booking;
 use App\Models\Admin;
 use App\Models\User;
+use App\Models\Favourite;
 
 
 class Hall extends Model
@@ -93,6 +94,14 @@ public function bookings()
 {
     return $this->hasMany(Bookings::class);
 }
+
+
+public function favourites()
+{
+    return $this->belongsTo(Favourite::class);
+}
+
+
 
 
 

@@ -54,6 +54,8 @@ Route::group([
         Route::delete('removeFavourite/{hall_id}', [InteractionsController::class, 'removeFavourite']);
         Route::get('getFavourite', [InteractionsController::class, 'getFavourite']);
 
+        Route::get('getUserFavsHalls', [InteractionsController::class, 'getUserFavsHalls']);
+        Route::get('isFavourite/{hallId}', [InteractionsController::class, 'isFavourite']);
 
 
 

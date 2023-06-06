@@ -262,13 +262,8 @@ class InteractionsController extends Controller
     {
 
         $user=Auth::guard('user-api')->user();
-
-
         $favorites = $user->favourites;
-
-
         if($favorites){
-
             return response()->json([
 
                 'message'=>'Returned Successfully ',
@@ -277,11 +272,6 @@ class InteractionsController extends Controller
             ],200);
 
         }
-
-
-
-
-
         else{
             return  response()->json(['message' => 'NOT Found'],404);
         }
@@ -289,6 +279,59 @@ class InteractionsController extends Controller
 
 
     }
+
+
+
+
+    public function getUserFavsHalls()
+    {
+        $user = Auth::guard('user-api')->user();
+        $favorites = $user->favourites->pluck('hall_id');
+
+        $halls = Hall::whereIn('id', $favorites)->get();
+
+        if($halls){
+
+            return response()->json([
+                'message' => 'Halls with IDs retrieved successfully.',
+                'halls' => $halls
+            ], 200);
+
+        }
+        else{
+            return  response()->json(['message' => 'NOT Found'],404);
+        }
+
+    }
+
+public function isFavourite ($hallId){
+
+    // $hallId = $request->input('hall_id');
+
+
+    $user = Auth::guard('user-api')->user();
+    $userid = Auth::guard('user-api')->id();
+
+    if (!$user) {
+        return response()->json(['message' => 'User not authenticated.'], 401);
+    }
+
+    // $isFavourite = $user->favourites()->where('hall_id', $hallId)->where('user_id', $userid)->exists();
+    $isFavourite = Favourite::where('hall_id', $hallId)->where('user_id', $userid)->exists();
+        if($isFavourite){
+            return response()->json([
+                'message' => 'Check completed successfully.',
+                'is_favourite' => true
+            ], 200);
+        }else{
+
+            return response()->json([
+                'message' => 'Check Failed .',
+                'is_favourite' => false
+            ], 405);
+        }
+
+}
 
 
 
