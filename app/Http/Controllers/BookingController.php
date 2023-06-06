@@ -106,11 +106,11 @@ class BookingController extends Controller
 
         $bookedHallIds = Booking::where(function ($query) use ($checkInDate, $checkOutDate) {
                 $query->whereBetween('check_in_date', [$checkInDate, $checkOutDate])
-                      ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
-                      ->orWhere(function ($query) use ($checkInDate, $checkOutDate) {
-                          $query->where('check_in_date', '<', $checkInDate)
+                    ->orWhereBetween('check_out_date', [$checkInDate, $checkOutDate])
+                    ->orWhere(function ($query) use ($checkInDate, $checkOutDate) {
+                        $query->where('check_in_date', '<', $checkInDate)
                                 ->where('check_out_date', '>', $checkOutDate);
-                      });
+                    });
             })
             ->pluck('hall_id')
             ->toArray();
@@ -125,9 +125,9 @@ class BookingController extends Controller
     function availablity_for_booking(Request $request){
          // Check if room is available for booking
 
-         $hall_id = $request ->hall_id;
-         $checkInDate= $request -> check_in_date;
-         $checkOutDate = $request -> check_out_date;
+        $hall_id = $request ->hall_id;
+        $checkInDate= $request -> check_in_date;
+        $checkOutDate = $request -> check_out_date;
 
 
         $avl_for_book = Booking::where('hall_id', $hall_id)
@@ -169,17 +169,12 @@ class BookingController extends Controller
         if (!$hall) {
             return response()->json(['error' => 'Hall not found'], 404);
         }else{
-
             if( $this->availablity_for_booking($request)== 0){
-
-
                     $special_offer = $hall->offers()
                     ->where('start_date', '<=', $request->input('check_in_date'))
                     ->where('end_date', '>=', $request->input('check_out_date'))
                     ->first();
-
                     $price = $special_offer ? $special_offer->price : $hall->price;
-
                     // create new booking record
                     $booking = Booking::create([
                         'user_id' => auth::guard('user-api')->user()->id,
@@ -189,11 +184,7 @@ class BookingController extends Controller
                         'check_in_date' => $validatedData['check_in_date'],
                         'check_out_date' => $validatedData['check_out_date'],
                         'price' => $price,
-
-
                     ]);
-
-
                     // return JSON responses
                     return response()->json([
                         'message' => 'Booking created successfully',
@@ -203,7 +194,6 @@ class BookingController extends Controller
                 else return response()->json([
                     'message' => 'Hall Is Not AVILABLE ']);
             }
-
         }
 
 

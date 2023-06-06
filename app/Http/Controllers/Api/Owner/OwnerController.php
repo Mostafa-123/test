@@ -580,7 +580,8 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
     public function getAllHallsByName(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('name',$request->name)->get();
+        $data=null;
+        $halls=Hall::where('verified', 'confirmed')->where('name','LIKE','%'.$request->name.'%')->get();
 
         if($halls){
                 foreach($halls as $hall){
@@ -590,7 +591,7 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
     public function getAllHallsByCountry(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('country',$request->country)->get();
+        $halls=Hall::where('verified', 'confirmed')->where('country','LIKE','%'.$request->country.'%')->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -599,7 +600,7 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
     public function getAllHallsByCity(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('city',$request->city)->get();
+        $halls=Hall::where('verified', 'confirmed')->where('city','LIKE','%'.$request->city.'%')->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -608,7 +609,7 @@ class OwnerController extends Controller
         }return $this->response('',"somthing wrong",401);
     }
     public function getAllHallsByStreet(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('street',$request->street)->get();
+        $halls=Hall::where('verified', 'confirmed')->where('street','LIKE','%'.$request->street.'%')->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
@@ -727,7 +728,7 @@ class OwnerController extends Controller
         $owner = Owner::find($owner_id);
         if ($owner) {
             $halls = $owner->hall;
-            if ($plans) {
+            if ($halls) {
                 foreach ($halls as $hall) {
                     $data[] = $this->planResources($hall);
                 }
