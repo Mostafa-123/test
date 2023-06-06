@@ -158,8 +158,9 @@ class InteractionsController extends Controller
     }
 
 
-    public function addLike(Request $request,  $hall_id)
+    public function addLike1(Request $request,  $hall_id)
     {
+        $userid = Auth::guard('user-api')->id();
 
         $thehall = Hall::where('id',$hall_id)->first();
 
@@ -201,6 +202,99 @@ class InteractionsController extends Controller
         }
 
     }
+
+
+
+
+
+    public function addLike2(Request $request, $hall_id)
+    {
+        $userid = Auth::guard('user-api')->id();
+
+        $thehall = Hall::where('id', $hall_id)->first();
+
+        if ($thehall)/* Check if Hall Id is valid */
+        {
+            $like = Like::where('hall_id', $thehall->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($like) {
+                $like->delete();
+                return response()->json(['message' => 'Like removed.']);
+            } else {
+                return response()->json(['message' => 'Like not found.']);
+            }
+        } else {
+            return response()->json(['message' => 'Invalid hall ID.']);
+        }
+    }
+
+
+    public function addLike3(Request $request, $hall_id)
+    {
+        $userid = Auth::guard('user-api')->id();
+
+        $thehall = Hall::where('id', $hall_id)->first();
+
+        if ($thehall)/* Check if Hall Id is valid */
+        {
+            $existingLike = Like::where('hall_id', $thehall->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($existingLike) {
+                return response()->json(['message' => 'You have already liked this hall.']);
+            } else {
+                $like = Like::create([
+                    'hall_id' => $thehall->id,
+                    'user_id' => auth()->user()->id,
+                ]);
+                $like->load('users');
+                $like->load('halls');
+                return response()->json(['message' => 'Post liked.']);
+            }
+        } else {
+            return response()->json(['message' => 'Invalid hall ID.']);
+        }
+    }
+
+
+    public function addLike(Request $request, $hall_id)
+    {
+        $userid = Auth::guard('user-api')->id();
+
+        $thehall = Hall::where('id', $hall_id)->first();
+
+        if ($thehall)/* Check if Hall Id is valid */
+        {
+            $existingLike = Like::where('hall_id', $thehall->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($existingLike) {
+                $existingLike->delete();
+                return response()->json(['message' => 'Like removed.']);
+            } else {
+                $like = Like::create([
+                    'hall_id' => $thehall->id,
+                    'user_id' => auth()->user()->id,
+                ]);
+                $like->load('users');
+                $like->load('halls');
+                return response()->json(['message' => 'Post liked.']);
+            }
+        } else {
+            return response()->json(['message' => 'Invalid hall ID.']);
+        }
+    }
+
+
+
+
+
+
+
 
 
 

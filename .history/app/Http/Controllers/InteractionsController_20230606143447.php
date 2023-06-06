@@ -304,34 +304,7 @@ class InteractionsController extends Controller
 
     }
 
-public function isFavourite (Request $request){
 
-    $hallId = $request->'hall_id';
-
-
-    $user = Auth::guard('user-api')->user();
-    $userid = Auth::guard('user-api')->id();
-
-    if (!$user) {
-        return response()->json(['message' => 'User not authenticated.'], 401);
-    }
-
-    // $isFavourite = $user->favourites()->where('hall_id', $hallId)->where('user_id', $userid)->exists();
-    $isFavourite = Favourite::where('hall_id', $hallId)->where('user_id', $userid)->exists();
-        if($isFavourite){
-            return response()->json([
-                'message' => 'Check completed successfully.',
-                'is_favourite' => true
-            ], 200);
-        }else{
-
-            return response()->json([
-                'message' => 'Check Failed .',
-                'is_favourite' => false
-            ], 405);
-        }
-
-}
 
 
 
