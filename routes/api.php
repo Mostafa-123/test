@@ -62,6 +62,22 @@ Route::group([
         Route::get('/getAllSupplierServices/{supplier_id}', [SupplierController::class, 'getAllSupplierServices']);
         Route::get('/getAllServices', [SupplierController::class, 'getAllServices']);
         Route::get('/getService/{service_id}', [SupplierController::class, 'getService']);
+        Route::get('/getAllflowers', [SupplierController::class, 'getAllflowers']);//1
+        Route::get('/getAllzaffatAndDj', [SupplierController::class, 'getAllzaffatAndDj']);//1
+        Route::get('/getAllcake', [SupplierController::class, 'getAllcake']);//1    SubService
+        Route::get('/getAlljallery', [SupplierController::class, 'getAlljallery']);//1
+        Route::get('/getAllcatering', [SupplierController::class, 'getAllcatering']);//1
+        Route::get('/getAllbodycare', [SupplierController::class, 'getAllbodycare']);//1
+        Route::get('/getAllcar', [SupplierController::class, 'getAllcar']);//1
+        Route::get('/getAllSupplierFlowers/{supplier_id}', [SupplierController::class, 'getAllSupplierFlowers']);//1
+        Route::get('/getAllSupplierZaffatAndDj/{supplier_id}', [SupplierController::class, 'getAllSupplierZaffatAndDj']);//1
+        Route::get('/getSupplierAllcake/{supplier_id}', [SupplierController::class, 'getSupplierAllcake']);//1
+        Route::get('/getSupplierAlljallery/{supplier_id}', [SupplierController::class, 'getSupplierAlljallery']);//1
+        Route::get('/getSupplierAllcatering/{supplier_id}', [SupplierController::class, 'getSupplierAllcatering']);//1
+        Route::get('/getSupplierAllbodycare/{supplier_id}', [SupplierController::class, 'getSupplierAllbodycare']);//1
+        Route::get('/getSupplierAllcar/{supplier_id}', [SupplierController::class, 'getSupplierAllcar']);//1
+
+
 
 
 
@@ -118,6 +134,9 @@ Route::group([
 
 
 
+Route::any('{url}',function (){
+    return response()->json('this url not found', 401);
+})->where('url','.*')->middleware('api');
 
 
 

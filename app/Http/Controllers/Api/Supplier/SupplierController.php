@@ -318,6 +318,133 @@ class SupplierController extends Controller
     }
 
 
+    public function getAllSupplierFlowers($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='flowers'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have flowers", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getAllSupplierZaffatAndDj($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='zaffatAndDj'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have zaffatAndDjs", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getSupplierAllcake($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='cake'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have cakes", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getSupplierAlljallery($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='jallery'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have jallerys", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getSupplierAllcatering($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='catering'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have caterings", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getSupplierAllbodycare($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='bodycare'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have bodycares", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+    public function getSupplierAllcar($supplier_id)
+    {
+        $data=null;
+        $supplier = Supplier::find($supplier_id);
+        if ($supplier) {
+            $services = $supplier->subService;
+            if ($services) {
+                foreach ($services as $service) {
+                    if($service->type=='car'){
+                    $data[] = $this->supServiceResources($service);}
+                }
+                return $this->response($data, "supplier services", 201);
+            }
+            return $this->response('', "This supplier dosnt have cars", 404);
+        }
+        return $this->response('', "This supplier id not found", 401);
+    }
+
+
 
     public function viewConfirmedBookingsPlans()
     {
