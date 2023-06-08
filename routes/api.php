@@ -10,7 +10,7 @@ use App\Http\Controllers\hallsController;
 use App\Http\Controllers\Api\Owner\OwnerController;
 use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Planner\PlannerController;
-use App\Http\Controllers\Api\Planner\SupplierController;
+use App\Http\Controllers\Api\Supplier\SupplierController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +59,11 @@ Route::group([
 
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
         Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);
-        Route::get('/getAllSupplierServices/{owner_id}', [SupplierController::class, 'getAllSupplierServices']);
+        Route::get('/getAllSupplierServices/{supplier_id}', [SupplierController::class, 'getAllSupplierServices']);
+        Route::get('/getAllServices', [SupplierController::class, 'getAllServices']);
+        Route::get('/getService/{service_id}', [SupplierController::class, 'getService']);
+
+
 
         Route::get('/getAllHalls', [UserController::class, 'getAllHalls']);
         Route::get('/getHall/{hall_id}', [UserController::class, 'gethall']);

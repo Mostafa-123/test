@@ -571,7 +571,7 @@ class OwnerController extends Controller
 
 
     public function getAllHallsByPrice(Request $request){
-        $halls=Hall::where('verified', 'confirmed')->where('price','>',$request->minPrice)->where('price','<',$request->maxPrice)->get();
+        $halls=Hall::where('verified', 'confirmed')->where('price','>',$request->minPrice)->where('price','<',$request->maxPrice)->orderBy('price', 'desc')->get();
         if($halls){
                 foreach($halls as $hall){
                     $data[]=$this->hallResources($hall);
