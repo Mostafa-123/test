@@ -160,6 +160,7 @@ class InteractionsController extends Controller
 
     public function addLike(Request $request,  $hall_id)
     {
+        $userid = Auth::guard('user-api')->id();
 
         $thehall = Hall::where('id',$hall_id)->first();
 
@@ -201,6 +202,38 @@ class InteractionsController extends Controller
         }
 
     }
+
+
+
+
+
+    public function addLike(Request $request, $hall_id)
+    {
+        $userid = Auth::guard('user-api')->id();
+
+        $thehall = Hall::where('id', $hall_id)->first();
+
+        if ($thehall)/* Check if Hall Id is valid */
+        {
+            $like = Like::where('hall_id', $thehall->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+            if ($like) {
+                $like->delete();
+                return response()->json(['message' => 'Like removed.']);
+            } else {
+                return response()->json(['message' => 'Like not found.']);
+            }
+        } else {
+            return response()->json(['message' => 'Invalid hall ID.']);
+        }
+    }
+
+
+
+
+
 
 
 
@@ -304,6 +337,34 @@ class InteractionsController extends Controller
 
     }
 
+public function isFavourite ($hallId){
+
+    // $hallId = $request->input('hall_id');
+
+
+    $user = Auth::guard('user-api')->user();
+    $userid = Auth::guard('user-api')->id();
+
+    if (!$user) {
+        return response()->json(['message' => 'User not authenticated.'], 401);
+    }
+
+    // $isFavourite = $user->favourites()->where('hall_id', $hallId)->where('user_id', $userid)->exists();
+    $isFavourite = Favourite::where('hall_id', $hallId)->where('user_id', $userid)->exists();
+        if($isFavourite){
+            return response()->json([
+                'message' => 'Check completed successfully.',
+                'is_favourite' => true
+            ], 200);
+        }else{
+
+            return response()->json([
+                'message' => 'Check Failed .',
+                'is_favourite' => false
+            ], 405);
+        }
+
+}
 
 
 
