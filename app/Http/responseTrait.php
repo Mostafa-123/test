@@ -127,6 +127,7 @@ trait responseTrait
             'owner'=>$owner,
             'id'=>$hall->id,
             'name'=>$hall->name,
+            'description'=>$hall->description,
             'address'=>$hall->address,
             'country'=>$hall->country,
             'city'=>$hall->city,

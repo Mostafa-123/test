@@ -137,6 +137,7 @@ class OwnerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
+            'description' => 'required|max:255',
             'address' => 'required|max:255',
             'country' => 'required|max:255',
             'city' => 'required|max:255',
@@ -165,6 +166,7 @@ class OwnerController extends Controller
             DB::beginTransaction();
             $result = Hall::create([
                 'name' => $request->name,
+                'description' => $request->description,
                 'address' => $request->address, 'country' => $request->country,
                 'city' => $request->city,
                 'street' => $request->street,
@@ -359,6 +361,7 @@ class OwnerController extends Controller
                 }
                 $newData = [
                     'name' => $request->name ? $request->name : $hall->name,
+                    'description' => $request->description ? $request->description : $hall->description,
                     'address' => $request->address ? $request->address : $hall->address,
                     'country' => $request->country ? $request->country : $hall->country,
                     'city' => $request->city ? $request->city : $hall->city,

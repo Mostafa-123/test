@@ -34,7 +34,7 @@ class Hall extends Model
 
     ];
 
-    protected $fillable=['name','address','country','city','street','rooms','chairs','price','hours','tables','type','capacity','available','start_party',
+    protected $fillable=['name','description','address','country','city','street','rooms','chairs','price','hours','tables','type','capacity','available','start_party',
     'end_party','owner_id','verified'];
 
 
