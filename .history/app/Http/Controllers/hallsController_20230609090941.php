@@ -392,8 +392,7 @@ public function getRecommendations4(Request $request)
 
 
 
-public function public function getRecommendations(Request $request)
-()
+public function  getRecommendations(Request $request)
 {
     $halls = Hall::withCount('likes')
         ->orderByDesc('likes_count')

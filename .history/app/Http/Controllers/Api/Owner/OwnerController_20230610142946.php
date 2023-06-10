@@ -168,7 +168,6 @@ class OwnerController extends Controller
             $result = Hall::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'link' => $request->link,
                 'address' => $request->address, 'country' => $request->country,
                 'city' => $request->city,
                 'street' => $request->street,
@@ -364,7 +363,6 @@ class OwnerController extends Controller
                 $newData = [
                     'name' => $request->name ? $request->name : $hall->name,
                     'description' => $request->description ? $request->description : $hall->description,
-                    'link' => $request->link ? $request->link : $hall->link,
                     'address' => $request->address ? $request->address : $hall->address,
                     'country' => $request->country ? $request->country : $hall->country,
                     'city' => $request->city ? $request->city : $hall->city,
