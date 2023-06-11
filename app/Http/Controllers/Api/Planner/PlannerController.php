@@ -29,7 +29,7 @@ class PlannerController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'description' => 'required|max:255',
+            'description' => 'required|max:5000',
             'price' => 'required|numeric',
         ]);
         if ($validator->fails()) {

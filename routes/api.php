@@ -58,6 +58,8 @@ Route::group([
         Route::post('bookRoom', [ BookingController::class,'bookRoom']);
 
         Route::get('/getAllPlannerPlans/{owner_id}', [PlannerController::class, 'getAllPlannerPlans']);
+        Route::get('/getAllPlans', [PlannerController::class, 'getAllPlans']);//1
+        Route::get('/getPlan/{plan_id}', [PlannerController::class, 'getPlan']);//1
         Route::get('/getAllOwnerHalls/{owner_id}', [OwnerController::class, 'getAllOwnerHalls']);
         Route::get('/getAllSupplierServices/{supplier_id}', [SupplierController::class, 'getAllSupplierServices']);
         Route::get('/getAllServices', [SupplierController::class, 'getAllServices']);

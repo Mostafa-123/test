@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\responseTrait;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -20,6 +21,7 @@ class InteractionsController extends Controller
 {
     //
     use GeneralTraits;
+    use responseTrait;
 
 
     public function addComment(Request $request,  $hall_id)
@@ -158,27 +160,7 @@ class InteractionsController extends Controller
     }
 
 
-    public function addLike1(Request $request,  $hall_id)
-    {
-        $userid = Auth::guard('user-api')->id();
 
-        $thehall = Hall::where('id',$hall_id)->first();
-
-        if($thehall)/* Check if Hall Id is valid */{
-                $like = Like :: create ([
-                    'hall_id'=>$thehall->id,
-                    'user_id'=>  auth()->user()->id,
-                ]);
-                $like->load('users');
-                $like->load('halls');
-        return response()->json(['message' => 'Post liked.']);
-        }
-        else{
-            return $this->removeLike($hall_id);
-        }
-
-
-    }
 
 
     public function removeLike(Request $request,  $like_id)
@@ -202,64 +184,6 @@ class InteractionsController extends Controller
         }
 
     }
-
-
-
-
-
-    public function addLike2(Request $request, $hall_id)
-    {
-        $userid = Auth::guard('user-api')->id();
-
-        $thehall = Hall::where('id', $hall_id)->first();
-
-        if ($thehall)/* Check if Hall Id is valid */
-        {
-            $like = Like::where('hall_id', $thehall->id)
-                ->where('user_id', auth()->user()->id)
-                ->first();
-
-            if ($like) {
-                $like->delete();
-                return response()->json(['message' => 'Like removed.']);
-            } else {
-                return response()->json(['message' => 'Like not found.']);
-            }
-        } else {
-            return response()->json(['message' => 'Invalid hall ID.']);
-        }
-    }
-
-
-    public function addLike3(Request $request, $hall_id)
-    {
-        $userid = Auth::guard('user-api')->id();
-
-        $thehall = Hall::where('id', $hall_id)->first();
-
-        if ($thehall)/* Check if Hall Id is valid */
-        {
-            $existingLike = Like::where('hall_id', $thehall->id)
-                ->where('user_id', auth()->user()->id)
-                ->first();
-
-            if ($existingLike) {
-                return response()->json(['message' => 'You have already liked this hall.']);
-            } else {
-                $like = Like::create([
-                    'hall_id' => $thehall->id,
-                    'user_id' => auth()->user()->id,
-                ]);
-                $like->load('users');
-                $like->load('halls');
-                return response()->json(['message' => 'Post liked.']);
-            }
-        } else {
-            return response()->json(['message' => 'Invalid hall ID.']);
-        }
-    }
-
-
     public function addLike(Request $request, $hall_id)
     {
         $userid = Auth::guard('user-api')->id();
@@ -388,7 +312,7 @@ class InteractionsController extends Controller
 
             return response()->json([
                 'message' => 'Halls with IDs retrieved successfully.',
-                'halls' => $halls
+                'halls' => $this->hallResources($halls)
             ], 200);
 
         }

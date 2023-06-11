@@ -17,9 +17,9 @@ use App\Models\SubService;
 use App\Models\SubRequest;
 
 use App\Http\responseTrait;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 
@@ -751,6 +751,7 @@ public function getUserAllSubRequests()
 
 public function getUserAllBookings()
 {
+    $data[]=null;
 
     try {
         $user = Auth::guard('user-api')->user();
@@ -769,8 +770,10 @@ public function getUserAllBookings()
 
 
     $bookings = Booking::where('user_id', $user_id)->get();
-
-    return response()->json($bookings);
+    foreach($bookings as $book){
+        $data[]=$this->hallBookingResources($book);
+    }
+    return response()->json(['bookingData'=>$data]);
 }
 
 

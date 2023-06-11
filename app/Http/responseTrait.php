@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use  App\Http\Resources\ownerResource;
 use App\Http\Resources\plannersResource;
 use App\Http\Resources\SupplierResource;
+use App\Models\Booking;
 use App\Models\SubService;
 
 trait responseTrait
@@ -89,67 +90,143 @@ trait responseTrait
             'photos'=>$photo,
         ];
     }
-    public function hallResources(Hall $hall){
-        $photo[]=null;
-        $video[]=null;
-        $service[]=null;
-        $show[]=null;
-        $owner=new ownerResource($hall->owner);
-        $photos=$hall->photos;
-            if($photos){
-                $i=0;
-                for($i=0;$i<count($photos);$i++){
-                    $photo[$i]="http://127.0.0.1:8000/owner/hall/hallphoto/".$hall->id."/".$photos[$i]->id;
-                }
+    public function hallResources(Hall $hall)
+    {
+        $photo[] = null;
+        $video[] = null;
+        $service[] = null;
+        $show[] = null;
+        $owner = new ownerResource($hall->owner);
+        $photos = $hall->photos;
+        if ($photos) {
+            $i = 0;
+            for ($i = 0; $i < count($photos); $i++) {
+                $photo[$i] = "http://127.0.0.1:8000/owner/hall/hallphoto/" . $hall->id . "/" . $photos[$i]->id;
             }
-            $videos=$hall->videos;
-            if($videos){
-                $i=0;
-                for($i=0;$i<count($videos);$i++){
-                    $video[$i]="http://127.0.0.1:8000/owner/hall/hallvideo/".$hall->id."/".$videos[$i]->id;
-                }
+        }
+        $videos = $hall->videos;
+        if ($videos) {
+            $i = 0;
+            for ($i = 0; $i < count($videos); $i++) {
+                $video[$i] = "http://127.0.0.1:8000/owner/hall/hallvideo/" . $hall->id . "/" . $videos[$i]->id;
             }
-            $shows=$hall->shows;
-            if($shows){
-                $i=0;
-                for($i=0;$i<count($shows);$i++){
-                    $show[$i]=$shows[$i]->showname;
-                }
+        }
+        $shows = $hall->shows;
+        if ($shows) {
+            $i = 0;
+            for ($i = 0; $i < count($shows); $i++) {
+                $show[$i] = $shows[$i]->showname;
             }
-            $services=$hall->services;
-            if($services){
-                $i=0;
-                for($i=0;$i<count($services);$i++){
-                    $service[$i]=$services[$i]->servicename;
-                }
+        }
+        $services = $hall->services;
+        if ($services) {
+            $i = 0;
+            for ($i = 0; $i < count($services); $i++) {
+                $service[$i] = $services[$i]->servicename;
             }
+        }
         return [
-            'owner'=>$owner,
-            'id'=>$hall->id,
-            'name'=>$hall->name,
-            'address'=>$hall->address,
-            'country'=>$hall->country,
-            'city'=>$hall->city,
-            'street'=>$hall->street,
-            'rooms'=>$hall->rooms,
-            'chairs'=>$hall->chairs,
-            'price'=>$hall->price,
-            'hours'=>$hall->hours,
-            'tables'=>$hall->tables,
-            'type'=>$hall->type,
-            'capacity'=>$hall->capacity,
-            'available'=>$hall->available,
-            'start_party'=>$hall->start_party,
-            'end_party'=>$hall->end_party,
-            'owner_id' =>$hall->owner(),
-            'verified'=>$hall->verified,
-            'photos'=>$photo,
-            'videos'=>$video,
-            'show'=>$show,
-            'service'=>$service,
-            'comments_count'=> $hall->comments()->count(),
-            'comments'=> $hall->comments,
-            'likes_count'=> $hall->likes()->count(),
+            'owner' => $owner,
+            'id' => $hall->id,
+            'name' => $hall->name,
+            'address' => $hall->address,
+            'country' => $hall->country,
+            'city' => $hall->city,
+            'street' => $hall->street,
+            'rooms' => $hall->rooms,
+            'chairs' => $hall->chairs,
+            'price' => $hall->price,
+            'hours' => $hall->hours,
+            'tables' => $hall->tables,
+            'type' => $hall->type,
+            'capacity' => $hall->capacity,
+            'available' => $hall->available,
+            'start_party' => $hall->start_party,
+            'end_party' => $hall->end_party,
+            'owner_id' => $hall->owner(),
+            'verified' => $hall->verified,
+            'photos' => $photo,
+            'videos' => $video,
+            'show' => $show,
+            'service' => $service,
+            'comments_count' => $hall->comments()->count(),
+            'comments' => $hall->comments,
+            'likes_count' => $hall->likes()->count(),
         ];
     }
+
+    public function hallBookingResources(Booking $Book)
+    {
+        $hall_id = $Book->hall_id;
+        $hall = Hall::find($hall_id);
+        $photo[] = null;
+        $video[] = null;
+        $service[] = null;
+        $show[] = null;
+        $owner = new ownerResource($hall->owner);
+        $photos = $hall->photos;
+        if ($photos) {
+            $i = 0;
+            for ($i = 0; $i < count($photos); $i++) {
+                $photo[$i] = "http://127.0.0.1:8000/owner/hall/hallphoto/" . $hall->id . "/" . $photos[$i]->id;
+            }
+        }
+        $videos = $hall->videos;
+        if ($videos) {
+            $i = 0;
+            for ($i = 0; $i < count($videos); $i++) {
+                $video[$i] = "http://127.0.0.1:8000/owner/hall/hallvideo/" . $hall->id . "/" . $videos[$i]->id;
+            }
+        }
+        $shows = $hall->shows;
+        if ($shows) {
+            $i = 0;
+            for ($i = 0; $i < count($shows); $i++) {
+                $show[$i] = $shows[$i]->showname;
+            }
+        }
+        $services = $hall->services;
+        if ($services) {
+            $i = 0;
+            for ($i = 0; $i < count($services); $i++) {
+                $service[$i] = $services[$i]->servicename;
+            }
+        }
+        return [
+            'user_id' => $Book->user_id,
+            'user_name' => $Book->user_name,
+            'check_in_date' => $Book->check_in_date,
+            'check_out_date' => $Book->check_out_date,
+            'price' => $Book->price,
+            'status' => $Book->status,
+            'hall' => [
+                'id' => $hall->id,
+                'name' => $hall->name,
+                'address' => $hall->address,
+                'country' => $hall->country,
+                'city' => $hall->city,
+                'street' => $hall->street,
+                'rooms' => $hall->rooms,
+                'chairs' => $hall->chairs,
+                'price' => $hall->price,
+                'hours' => $hall->hours,
+                'tables' => $hall->tables,
+                'type' => $hall->type,
+                'capacity' => $hall->capacity,
+                'available' => $hall->available,
+                'start_party' => $hall->start_party,
+                'end_party' => $hall->end_party,
+                'owner_id' => $hall->owner(),
+                'verified' => $hall->verified,
+                'photos' => $photo,
+                'videos' => $video,
+                'show' => $show,
+                'service' => $service,
+                'comments_count' => $hall->comments()->count(),
+                'comments' => $hall->comments,
+                'likes_count' => $hall->likes()->count(),
+            ]
+        ];
+    }
+
 }
