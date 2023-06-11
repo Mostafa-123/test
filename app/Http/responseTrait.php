@@ -126,7 +126,6 @@ trait responseTrait
             }
         }
         return [
-<<<<<<< HEAD
             'owner' => $owner,
             'id' => $hall->id,
             'name' => $hall->name,
@@ -153,36 +152,6 @@ trait responseTrait
             'comments_count' => $hall->comments()->count(),
             'comments' => $hall->comments,
             'likes_count' => $hall->likes()->count(),
-=======
-            'owner'=>$owner,
-            'id'=>$hall->id,
-            'name'=>$hall->name,
-            'description'=>$hall->description,
-            'link'=>$hall->link,
-            'address'=>$hall->address,
-            'country'=>$hall->country,
-            'city'=>$hall->city,
-            'street'=>$hall->street,
-            'rooms'=>$hall->rooms,
-            'chairs'=>$hall->chairs,
-            'price'=>$hall->price,
-            'hours'=>$hall->hours,
-            'tables'=>$hall->tables,
-            'type'=>$hall->type,
-            'capacity'=>$hall->capacity,
-            'available'=>$hall->available,
-            'start_party'=>$hall->start_party,
-            'end_party'=>$hall->end_party,
-            'owner_id' =>$hall->owner(),
-            'verified'=>$hall->verified,
-            'photos'=>$photo,
-            'videos'=>$video,
-            'show'=>$show,
-            'service'=>$service,
-            'comments_count'=> $hall->comments()->count(),
-            'comments'=> $hall->comments,
-            'likes_count'=> $hall->likes()->count(),
->>>>>>> 0d08a21431a84be5cc15079dbd8fe81b9966861f
         ];
     }
 
