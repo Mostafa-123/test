@@ -106,7 +106,10 @@ Route::group([
 
         Route::post('addHall_WITHOUT_Token', [OwnerController::class, 'addHallRequestsToOWNER']);
 
+        Route::post('recommendHalls', [hallsController::class, 'recommendHalls']);
 
+        Route::get('getRecommendations', [hallsController::class, 'getRecommendations']);
+        Route::get('getRecommendations2', [hallsController::class, 'getRecommendations2']);
 
 
 
