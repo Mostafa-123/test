@@ -204,7 +204,6 @@ trait responseTrait
                 'id' => $hall->id,
                 'name' => $hall->name,
                 'address' => $hall->address,
-                'description' => $hall->description,
                 'country' => $hall->country,
                 'city' => $hall->city,
                 'street' => $hall->street,
