@@ -303,16 +303,19 @@ class InteractionsController extends Controller
 
     public function getUserFavsHalls()
     {
+        $data[]=null;
         $user = Auth::guard('user-api')->user();
         $favorites = $user->favourites->pluck('hall_id');
 
         $halls = Hall::whereIn('id', $favorites)->get();
 
         if($halls){
-
+            foreach($halls as $hall){
+                $data[]=$this->hallResources($hall);
+            }
             return response()->json([
                 'message' => 'Halls with IDs retrieved successfully.',
-                'halls' => $this->hallResources($halls)
+                'halls' => $data
             ], 200);
 
         }
