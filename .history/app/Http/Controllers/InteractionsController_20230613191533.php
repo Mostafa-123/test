@@ -301,21 +301,18 @@ class InteractionsController extends Controller
 
 
 
-    public function getUserFavsHalls1()
+    public function getUserFavsHalls()
     {
-        $data[]=null;
         $user = Auth::guard('user-api')->user();
         $favorites = $user->favourites->pluck('hall_id');
 
         $halls = Hall::whereIn('id', $favorites)->get();
 
         if($halls){
-            foreach($halls as $hall){
-                $data[]=$this->hallResources($hall);
-            }
+
             return response()->json([
                 'message' => 'Halls with IDs retrieved successfully.',
-                'halls' => $data
+                'halls' => $this->hallResources($halls)
             ], 200);
 
         }
@@ -327,28 +324,7 @@ class InteractionsController extends Controller
 
 
 
-    public function getUserFavsHalls()
-    {
-        $user = Auth::guard('user-api')->user();
-        $favorites = $user->favourites->pluck('hall_id');
 
-        $halls = Hall::whereIn('id', $favorites)->get();
-
-        $data = []; // Initialize an empty array
-
-        if ($halls->isNotEmpty()) {
-            foreach ($halls as $hall) {
-                $data[] = $this->hallResources($hall);
-            }
-
-            return response()->json([
-                'message' => 'Halls with IDs retrieved successfully.',
-                'halls' => $data
-            ], 200);
-        } else {
-            return response()->json(['message' => 'No favorite halls found.'], 404);
-        }
-    }
 
 
 

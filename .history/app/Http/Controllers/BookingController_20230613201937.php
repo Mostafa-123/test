@@ -777,41 +777,6 @@ public function getUserAllBookings1()
 }
 
 
-public function getUserAllBookings()
-{
-    try {
-        $user = Auth::guard('user-api')->user();
-        if (!$user) {
-            throw new JWTException('Invalid token');
-        }
-        $user_id = $user->id;
-    } catch (JWTException $e) {
-        $message = $e->getMessage();
-        return response()->json(['message' => $message], 401);
-    } catch (\Exception $e) {
-        // Handle other exceptions if needed
-    }
-
-    $bookings = Booking::where('user_id', $user_id)->get();
-    $data = []; // Initialize an empty array
-
-    foreach ($bookings as $book) {
-        $data[] = $this->hallBookingResources($book);
-    }
-
-    return response()->json(['bookingData' => $data]);
-}
-
-
-
-
-
-
-
-
-
-
-
 
     public function getUserConfirmedBookings()
 {
